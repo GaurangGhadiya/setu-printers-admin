@@ -117,9 +117,7 @@ const RowOptions = ({ id }) => {
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
         <MenuItem
-          // component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          // href='/apps/user/view/account'
           onClick={handleRowOptionsClose}
         >
           <Icon icon='tabler:eye' fontSize={20} />
@@ -895,8 +893,6 @@ const columns = [
           <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
             <Typography
               noWrap
-              // component={Link}
-              // href='/apps/user/view/account'
               sx={{
                 fontWeight: 500,
                 textDecoration: 'none',
