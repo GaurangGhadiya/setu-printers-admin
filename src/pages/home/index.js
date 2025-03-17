@@ -1036,7 +1036,7 @@ const Home = () => {
 
   return (
     <Grid container spacing={6.5}>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         {apiData && (
           <Grid container spacing={6}>
             {apiData?.map((item, index) => {
@@ -1048,7 +1048,7 @@ const Home = () => {
             })}
           </Grid>
         )}
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Search Filters' />
