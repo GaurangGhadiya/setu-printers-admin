@@ -42,6 +42,7 @@ import axios from 'axios'
 import TableHeader from './TableHeader'
 import AddUserDrawer from './AddUserDrawer'
 import { Button, Modal } from '@mui/material'
+
 // ** Third Party Imports
 import format from 'date-fns/format'
 import addDays from 'date-fns/addDays'
@@ -892,6 +893,7 @@ const User = () => {
   const handleClose = () => {
     setSelectedImage(null);
   };
+  
   const columns = [
   {
     flex: 0.20,

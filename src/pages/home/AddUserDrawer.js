@@ -77,6 +77,7 @@ const defaultValues = {
 
 const SidebarAddUser = props => {
   const [files, setFiles] = useState([])
+
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     accept: {
@@ -90,6 +91,7 @@ const SidebarAddUser = props => {
   const img = files.map(file => (
     <img key={file.name} alt={file.name} className='single-file-image' src={URL.createObjectURL(file)} />
   ))
+
   // ** Props
   const { open, toggle } = props
 
@@ -254,8 +256,6 @@ const SidebarAddUser = props => {
         rows={4}
         multiline
         label='Multiline'
-        // onChange={onChange}
-        // defaultValue='Default Value'
         id='textarea-outlined-static'
       />
 
