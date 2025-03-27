@@ -157,7 +157,7 @@ const LoginPage = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-           <Image src={"/images/logo.jpeg"} height={50} width={50} alt="image"/>
+           {/* <Image src={"/images/logo.jpeg"} height={50} width={50} alt="image"/> */}
             <Box sx={{ my: 6 }}>
               <Typography variant='h3' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
