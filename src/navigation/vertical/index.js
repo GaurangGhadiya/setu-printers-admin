@@ -1,9 +1,19 @@
 const navigation = () => {
   return [
     {
-      title: 'Home',
-      path: '/home',
+      title: 'Dahsboard',
+      path: '/users',
       icon: 'tabler:smart-home',
+    },
+    {
+      title: 'Users',
+      path: '/home',
+      icon: 'tabler:user',
+    },
+    {
+      title: 'Setting',
+      path: '/setting',
+      icon: 'tabler:settings',
     }
   ]
 }

@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
 // ** Custom Component Import
-import { useDropzone } from 'react-dropzone'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 // ** Third Party Imports
@@ -72,24 +71,10 @@ const defaultValues = {
   billing: '',
   fullName: '',
   username: '',
-  contact: ""
+  contact: Number('')
 }
 
 const SidebarAddUser = props => {
-  const [files, setFiles] = useState([])
-  const { getRootProps, getInputProps } = useDropzone({
-    multiple: false,
-    accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
-    },
-    onDrop: acceptedFiles => {
-      setFiles(acceptedFiles.map(file => Object.assign(file)))
-    }
-  })
-
-  const img = files.map(file => (
-    <img key={file.name} alt={file.name} className='single-file-image' src={URL.createObjectURL(file)} />
-  ))
   // ** Props
   const { open, toggle } = props
 
@@ -189,43 +174,23 @@ const SidebarAddUser = props => {
               />
             )}
           />
-             <Controller
-            name='contact'
+          <Controller
+            name='username'
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
-                type='number'
                 value={value}
                 sx={{ mb: 4 }}
-                label='Mobile Number 1'
+                label='Username'
                 onChange={onChange}
-                placeholder='(397) 294-5153'
-                error={Boolean(errors.contact)}
-                {...(errors.contact && { helperText: errors.contact.message })}
+                placeholder='johndoe'
+                error={Boolean(errors.username)}
+                {...(errors.username && { helperText: errors.username.message })}
               />
             )}
           />
-             <Controller
-            name='contact'
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { value, onChange } }) => (
-              <CustomTextField
-                fullWidth
-                type='number'
-                value={value}
-                sx={{ mb: 4 }}
-                label='Mobile Number 2'
-                onChange={onChange}
-                placeholder='(397) 294-5153'
-                error={Boolean(errors.contact)}
-                {...(errors.contact && { helperText: errors.contact.message })}
-              />
-            )}
-          />
-          
           <Controller
             name='email'
             control={control}
@@ -244,53 +209,111 @@ const SidebarAddUser = props => {
               />
             )}
           />
-       
-     
-       
-       
-       <CustomTextField
-       fullWidth
-       placeholder="Enter Address"
-        rows={4}
-        multiline
-        label='Multiline'
-        // onChange={onChange}
-        // defaultValue='Default Value'
-        id='textarea-outlined-static'
-      />
-
-<Box border={"1px dotted #ccc"} borderRadius={1} mt={5} p={5}>
-<Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 450 } : {}}>
-      <input {...getInputProps()} />
-      {files.length ? (
-        img
-      ) : (
-        <Box sx={{ display: 'flex', textAlign: 'center', alignItems: 'center', flexDirection: 'column' }}>
-          <Box
-            sx={{
-              mb: 4.75,
-              width: 48,
-              height: 48,
-              display: 'flex',
-              borderRadius: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)`
-            }}
+          <Controller
+            name='company'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                value={value}
+                sx={{ mb: 4 }}
+                label='Company'
+                onChange={onChange}
+                placeholder='Company PVT LTD'
+                error={Boolean(errors.company)}
+                {...(errors.company && { helperText: errors.company.message })}
+              />
+            )}
+          />
+          <Controller
+            name='country'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                value={value}
+                sx={{ mb: 4 }}
+                label='Country'
+                onChange={onChange}
+                placeholder='Australia'
+                error={Boolean(errors.country)}
+                {...(errors.country && { helperText: errors.country.message })}
+              />
+            )}
+          />
+          <Controller
+            name='contact'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                fullWidth
+                type='number'
+                value={value}
+                sx={{ mb: 4 }}
+                label='Contact'
+                onChange={onChange}
+                placeholder='(397) 294-5153'
+                error={Boolean(errors.contact)}
+                {...(errors.contact && { helperText: errors.contact.message })}
+              />
+            )}
+          />
+          <Controller
+            name='billing'
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange } }) => (
+              <CustomTextField
+                select
+                fullWidth
+                sx={{ mb: 4 }}
+                label='Billing'
+                id='validation-billing-select'
+                error={Boolean(errors.billing)}
+                aria-describedby='validation-billing-select'
+                {...(errors.billing && { helperText: errors.billing.message })}
+                SelectProps={{ value: value, onChange: e => onChange(e) }}
+              >
+                <MenuItem value=''>Billing</MenuItem>
+                <MenuItem value='Auto Debit'>Auto Debit</MenuItem>
+                <MenuItem value='Manual - Cash'>Manual - Cash</MenuItem>
+                <MenuItem value='Manual - Paypal'>Manual - Paypal</MenuItem>
+                <MenuItem value='Manual - Credit Card'>Manual - Credit Card</MenuItem>
+              </CustomTextField>
+            )}
+          />
+          <CustomTextField
+            select
+            fullWidth
+            value={role}
+            sx={{ mb: 4 }}
+            label='Select Role'
+            onChange={e => setRole(e.target.value)}
+            SelectProps={{ value: role, onChange: e => setRole(e.target.value) }}
           >
-            <Icon icon='tabler:upload' fontSize='1.75rem' />
-          </Box>
-          <Typography variant='h6' sx={{ mb: 2.5 }}>
-            Drop your profile photo here or click to upload your photo.
-          </Typography>
-          {/* <Typography sx={{ color: 'text.secondary', fontSize : 14 }}>
-            (This is just a demo drop zone. Selected files are not actually uploaded.)
-          </Typography> */}
-        </Box>
-      )}
-    </Box>
-</Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt : 4 }}>
+            <MenuItem value='admin'>Admin</MenuItem>
+            <MenuItem value='author'>Author</MenuItem>
+            <MenuItem value='editor'>Editor</MenuItem>
+            <MenuItem value='maintainer'>Maintainer</MenuItem>
+            <MenuItem value='subscriber'>Subscriber</MenuItem>
+          </CustomTextField>
+
+          <CustomTextField
+            select
+            fullWidth
+            sx={{ mb: 6 }}
+            label='Select Plan'
+            SelectProps={{ value: plan, onChange: e => setPlan(e.target.value) }}
+          >
+            <MenuItem value='basic'>Basic</MenuItem>
+            <MenuItem value='company'>Company</MenuItem>
+            <MenuItem value='enterprise'>Enterprise</MenuItem>
+            <MenuItem value='team'>Team</MenuItem>
+          </CustomTextField>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button type='submit' variant='contained' sx={{ mr: 3 }}>
               Submit
             </Button>
