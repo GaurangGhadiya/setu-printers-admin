@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback, forwardRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -41,15 +41,7 @@ import axios from 'axios'
 // ** Custom Table Components Imports
 import TableHeader from './TableHeader'
 import AddUserDrawer from './AddUserDrawer'
-import { Button, Modal } from '@mui/material'
-
-// ** Third Party Imports
-import format from 'date-fns/format'
-import addDays from 'date-fns/addDays'
-import { subDays } from 'date-fns';
-
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css";
+import { Button } from '@mui/material'
 
 // ** renders client column
 const userRoleObj = {
@@ -67,7 +59,21 @@ const userStatusObj = {
 }
 
 // ** renders client column
-
+const renderClient = row => {
+  if (row.avatar.length) {
+    return <CustomAvatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
+  } else {
+    return (
+      <CustomAvatar
+        skin='light'
+        color={row.avatarColor}
+        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
+      >
+        {getInitials(row.fullName ? row.fullName : 'John Doe')}
+      </CustomAvatar>
+    )
+  }
+}
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -178,7 +184,7 @@ const users = [
       "email": "hredmore1@imgur.com",
       "currentPlan": "team",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/3.png"
   },
   {
       "id": 3,
@@ -206,7 +212,7 @@ const users = [
       "email": "crisby3@wordpress.com",
       "currentPlan": "team",
       "status": "inactive",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/3.png"
   },
   {
       "id": 5,
@@ -234,7 +240,7 @@ const users = [
       "email": "shalstead5@shinystat.com",
       "currentPlan": "company",
       "status": "active",
-      "avatar": "/images/avatars/1.png",
+      "avatar": "",
       "avatarColor": "error"
   },
   {
@@ -249,7 +255,7 @@ const users = [
       "email": "bgallemore6@boston.com",
       "currentPlan": "company",
       "status": "pending",
-      "avatar": "/images/avatars/1.png",
+      "avatar": "",
       "avatarColor": "warning"
   },
   {
@@ -264,7 +270,7 @@ const users = [
       "email": "kliger7@vinaora.com",
       "currentPlan": "enterprise",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/4.png"
   },
   {
       "id": 9,
@@ -278,7 +284,7 @@ const users = [
       "email": "fscotfurth8@dailymotion.com",
       "currentPlan": "team",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/2.png"
   },
   {
       "id": 10,
@@ -292,7 +298,7 @@ const users = [
       "email": "jbellany9@kickstarter.com",
       "currentPlan": "company",
       "status": "inactive",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/5.png"
   },
   {
       "id": 11,
@@ -306,7 +312,7 @@ const users = [
       "email": "jwharltona@oakley.com",
       "currentPlan": "team",
       "status": "inactive",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/4.png"
   },
   {
       "id": 12,
@@ -320,7 +326,7 @@ const users = [
       "email": "shallamb@hugedomains.com",
       "currentPlan": "team",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/5.png"
   },
   {
       "id": 13,
@@ -362,7 +368,7 @@ const users = [
       "email": "zmcclevertye@soundcloud.com",
       "currentPlan": "enterprise",
       "status": "active",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/2.png"
   },
   {
       "id": 16,
@@ -476,7 +482,7 @@ const users = [
       "email": "kskitterelm@ainyx.com",
       "currentPlan": "basic",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/3.png"
   },
   {
       "id": 24,
@@ -490,7 +496,7 @@ const users = [
       "email": "chatherleighn@washington.edu",
       "currentPlan": "team",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/2.png"
   },
   {
       "id": 25,
@@ -519,7 +525,7 @@ const users = [
       "email": "hhassonp@bizjournals.com",
       "currentPlan": "basic",
       "status": "inactive",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/4.png"
   },
   {
       "id": 27,
@@ -533,7 +539,7 @@ const users = [
       "email": "gjacombsq@jigsy.com",
       "currentPlan": "enterprise",
       "status": "active",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/5.png"
   },
   {
       "id": 28,
@@ -605,7 +611,7 @@ const users = [
       "email": "rsnowballv@indiegogo.com",
       "currentPlan": "basic",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/5.png"
   },
   {
       "id": 33,
@@ -633,7 +639,7 @@ const users = [
       "email": "ofibbensx@booking.com",
       "currentPlan": "company",
       "status": "active",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/4.png"
   },
   {
       "id": 35,
@@ -794,7 +800,7 @@ const users = [
       "email": "cperot18@goo.ne.jp",
       "currentPlan": "team",
       "status": "pending",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/3.png"
   },
   {
       "id": 46,
@@ -867,39 +873,16 @@ const users = [
       "email": "bkrabbe1d@home.pl",
       "currentPlan": "company",
       "status": "active",
-      "avatar": "/images/avatars/1.png"
+      "avatar": "/images/avatars/2.png"
   }
 ]
 
-
-
-
-const User = () => {
-  // ** State
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const [value, setValue] = useState('')
-  const [status, setStatus] = useState('')
-  const [addUserOpen, setAddUserOpen] = useState(false)
-  
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
-  const [startDateRange, setStartDateRange] = useState(new Date())
-  const [endDateRange, setEndDateRange] = useState(subDays(new Date(), 45))
-
-  const handleClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
-  };
-
-  const handleClose = () => {
-    setSelectedImage(null);
-  };
-  
-  const columns = [
+const columns = [
   {
     flex: 0.20,
-    minWidth: 100,
+    minWidth: 200,
     field: 'fullName',
-    headerName: 'Thumbnail',
+    headerName: 'User',
     sortable : false,
     renderCell: ({ row }) => {
       const { fullName, email } = row
@@ -907,25 +890,22 @@ const User = () => {
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
-       
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    field: 'name',
-    minWidth: 270,
-    headerName: 'Name',
-    sortable : false,
-
-    renderCell: ({ row }) => {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        
-          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.fullName}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <Typography
+              noWrap
+              sx={{
+                fontWeight: 500,
+                textDecoration: 'none',
+                color: 'text.secondary',
+                '&:hover': { color: 'primary.main' }
+              }}
+            >
+              {fullName}
+            </Typography>
+            {/* <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
+              {email}
+            </Typography> */}
+          </Box>
         </Box>
       )
     }
@@ -934,74 +914,75 @@ const User = () => {
     flex: 0.25,
     field: 'email',
     minWidth: 270,
-    headerName: 'QR Code Value',
+    headerName: 'Email',
     sortable : false,
 
     renderCell: ({ row }) => {
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        
+          {/* <CustomAvatar
+            skin='light'
+            sx={{ mr: 4, width: 30, height: 30 }}
+            color={userRoleObj[row.role].color || 'primary'}
+          >
+            <Icon icon={userRoleObj[row.role].icon} />
+          </CustomAvatar> */}
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            ABCD1234
+            {row.email}
           </Typography>
         </Box>
       )
     }
   },
   {
-    flex: 0.25,
-    minWidth: 200,
-    headerName: 'Date Time',
+    flex: 0.20,
+    minWidth: 120,
+    headerName: 'contact',
     sortable : false,
 
-    field: 'Date Time',
+    field: 'Phone Number',
     renderCell: ({ row }) => {
       return (
         <Typography noWrap sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}>
-          27-04-2025 07:15PM
+          {row.contact}
         </Typography>
       )
     }
   },
+  {
+    flex: 0.20,
+    minWidth: 190,
+    field: 'company',
+    sortable : false,
 
+    headerName: 'Address',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {row.company}
+        </Typography>
+      )
+    }
+  },
+ 
   {
     flex: 0.1,
     minWidth: 100,
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) =>{
-      return (
-        <Box display={"flex"} alignItems={"center"} style={{cursor : "pointer"}}>
-           <Icon icon='tabler:trash' fontSize={20} color="red"/>&nbsp;
-        </Box>
-      )
-    }
-      
-      
-      
-      
-      
-      // <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions id={row.id} />
   }
 ]
 
-  const renderClient = row => {
-    if (row.avatar.length) {
-      return <CustomAvatar onClick={() => handleClick(row.avatar)} src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
-    } else {
-      return (
-        <CustomAvatar
-          skin='light'
-          color={row.avatarColor}
-          sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-        >
-          {getInitials(row.fullName ? row.fullName : 'John Doe')}
-        </CustomAvatar>
-      )
-    }
-  }
-
+const Home = () => {
+  // ** State
+  const [role, setRole] = useState('')
+  const [plan, setPlan] = useState('')
+  const [value, setValue] = useState('')
+  const [status, setStatus] = useState('')
+  const [addUserOpen, setAddUserOpen] = useState(false)
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
 
   // ** Hooks
   // const dispatch = useDispatch()
@@ -1021,22 +1002,17 @@ const User = () => {
     setValue(val)
   }, [])
 
-  const handleOnChangeRange = dates => {
-    const [start, end] = dates
-    setStartDateRange(start)
-    setEndDateRange(end)
-  }
+  const handleRoleChange = useCallback(e => {
+    setRole(e.target.value)
+  }, [])
 
-  const CustomInput = forwardRef((props, ref) => {
+  const handlePlanChange = useCallback(e => {
+    setPlan(e.target.value)
+  }, [])
 
-      const startDate = format(props.start, 'dd/MM/yyyy');
-      const endDate = props.end !== null ? ` - ${format(props.end, 'dd/MM/yyyy')}` : '';
-      const value = `${startDate}${endDate}`;
-    
-      return <CustomTextField fullWidth inputRef={ref} label={props.label || ''} {...props} value={value} />;
-    
-
-  });
+  const handleStatusChange = useCallback(e => {
+    setStatus(e.target.value)
+  }, [])
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
   return (
@@ -1056,63 +1032,45 @@ const User = () => {
       </Grid> */}
       <Grid item xs={12}>
         <Card>
-          {/* <CardHeader title='Search Filters' /> */}
+          <CardHeader title='Search Filters' />
           <CardContent>
             <Grid container spacing={6}>
-              <Grid item sm={2.5} xs={12}>
+              <Grid item sm={3.5} xs={12}>
               <CustomTextField
               fullWidth
           value={value}
           sx={{ mr: 4 }}
-          placeholder='Search By User'
+          placeholder='Search By Name'
           onChange={e => handleFilter(e.target.value)}
         />
               </Grid>
-              <Grid item sm={3} xs={12}>
-              <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={"bottom-start"}
-          customInput={<CustomInput label='' end={endDateRange} start={startDateRange} />}
+              <Grid item sm={3.5} xs={12}>
+              <CustomTextField
+              fullWidth
+          value={value}
+          sx={{ mr: 4 }}
+          placeholder='Search By Email'
+          onChange={e => handleFilter(e.target.value)}
         />
               </Grid>
-            
+              <Grid item sm={3.5} xs={12}>
+               <CustomTextField
+               fullWidth
+          value={value}
+          sx={{ mr: 4 }}
+          placeholder='Search By Pnone Number'
+          onChange={e => handleFilter(e.target.value)}
+        />
+              </Grid>
               <Grid item sm={1.5} xs={12}>
               <Button  variant='contained' startIcon={<Icon icon='tabler:search' />}>
         Search
       </Button>
-
-              </Grid>
-              <Grid item sm={3} xs={12}>
-              <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={"bottom-start"}
-          customInput={<CustomInput label='' end={endDateRange} start={startDateRange} />}
-        />
-              </Grid>
-              <Grid item sm={2} xs={12}>
-              <Button  variant='contained' startIcon={<Icon icon='tabler:search' />}>
-        Export as CSV
-      </Button>
-
               </Grid>
             </Grid>
           </CardContent>
           <Divider sx={{ m: '0 !important' }} />
-          {/* <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} /> */}
+          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
           <DataGrid
             autoHeight
             rowHeight={62}
@@ -1124,31 +1082,16 @@ const User = () => {
             disableSelectionOnClick
             disableDensitySelector
             sortingMode="none"
-            pagination={false} // Disables pagination
+            pageSizeOptions={[10, 25, 50]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
           />
         </Card>
       </Grid>
 
       <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
-      <Modal open={!!selectedImage} onClose={handleClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "white",
-            boxShadow: 24,
-            p: 2,
-            outline: "none",
-            borderRadius: 2,
-          }}
-        >
-          {selectedImage && <img src={selectedImage} alt="Preview" width="300" />}
-        </Box>
-      </Modal>
     </Grid>
   )
 }
 
-export default User
+export default Home

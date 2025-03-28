@@ -2,12 +2,12 @@ const navigation = () => {
   return [
     {
       title: 'Dahsboard',
-      path: '/users',
+      path: '/dashboard',
       icon: 'tabler:smart-home',
     },
     {
       title: 'Users',
-      path: '/home',
+      path: '/users',
       icon: 'tabler:user',
     },
     {
