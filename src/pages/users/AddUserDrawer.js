@@ -30,15 +30,12 @@ import toast from 'react-hot-toast'
 // ** Actions Imports
 // import { addUser } from 'src/store/apps/user'
 
-
-
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(6),
   justifyContent: 'space-between'
 }))
-
 
 const SidebarAddUser = props => {
   const [files, setFiles] = useState([])
@@ -51,12 +48,18 @@ const SidebarAddUser = props => {
     },
     onDrop: acceptedFiles => {
       setFiles(acceptedFiles.map(file => Object.assign(file)))
-
     }
   })
 
   const img = files.map(file => (
-    <img key={file.name} alt={file.name} className='single-file-image' height={300} width={300} src={URL.createObjectURL(file)} />
+    <img
+      key={file.name}
+      alt={file.name}
+      className='single-file-image'
+      height={300}
+      width={300}
+      src={URL.createObjectURL(file)}
+    />
   ))
 
   // ** Props
@@ -83,52 +86,49 @@ const SidebarAddUser = props => {
   })
 
   function jsonToFormData(json) {
-    const formData = new FormData();
+    const formData = new FormData()
 
     Object.keys(json).forEach(key => {
-        formData.append(key, json[key]);
-    });
-
-    return formData;
-}
-
-  const handleSubmit =async (e)  => {
-    e.preventDefault()
-
-    if(!data?.fullName){
-toast.error("Full Name is requried")
-    } else if(!data?.phoneNumber){
-      toast.error("Phone Number is requried")
-    }else if (!data?.phoneNumber2){
-      toast.error("Phone Number is requried")
-    }else if(!data?.email){
-      toast.error("Email is requried")
-    }else if (!data?.address){
-      toast.error("Address is requried")
-    }else{
-
-  
-
-    const formData = jsonToFormData({...data, profilePhoto : files?.[0]});
-
-    await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, formData).then(res => {
-      console.log('res', res)
-      toast.success("User Added Successfull")
-      handleClose()
-      props.getUser()
-    }).catch(e => {
-      console.log('e', e)
-      toast.error(e?.response?.data?.error?.message)
-
+      formData.append(key, json[key])
     })
 
+    return formData
   }
 
+  const handleSubmit = async e => {
+    e.preventDefault()
+
+    if (!data?.fullName) {
+      toast.error('Full Name is requried')
+    } else if (!data?.phoneNumber) {
+      toast.error('Phone Number is requried')
+    } else if (!data?.phoneNumber2) {
+      toast.error('Phone Number is requried')
+    } else if (!data?.email) {
+      toast.error('Email is requried')
+    } else if (!data?.address) {
+      toast.error('Address is requried')
+    } else {
+      const formData = jsonToFormData({ ...data, profilePhoto: files?.[0] })
+
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, formData)
+        .then(res => {
+          console.log('res', res)
+          toast.success('User Added Successfull')
+          handleClose()
+          props.getUser()
+        })
+        .catch(e => {
+          console.log('e', e)
+          toast.error(e?.response?.data?.error?.message)
+        })
+    }
   }
 
-  const handelChange = (e) => {
-    const {name, value} = e.target
-    setData({...data, [name] : value})
+  const handelChange = e => {
+    const { name, value } = e.target
+    setData({ ...data, [name]: value })
   }
 
   const handleClose = () => {
@@ -173,14 +173,13 @@ toast.error("Full Name is requried")
           <Controller
             name='fullName'
             control={control}
-            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
-                value={data?.fullName || ""}
+                value={data?.fullName || ''}
                 sx={{ mb: 4 }}
                 label='Full Name'
-                name="fullName"
+                name='fullName'
                 onChange={handelChange}
                 placeholder=''
                 error={Boolean(errors.fullName)}
@@ -188,22 +187,21 @@ toast.error("Full Name is requried")
               />
             )}
           />
-             <Controller
+          <Controller
             name='contact'
             control={control}
-            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='number'
-                value={data?.phoneNumber || ""}
+                value={data?.phoneNumber || ''}
                 sx={{ mb: 4 }}
                 label='Mobile Number 1'
-                name="phoneNumber"
+                name='phoneNumber'
                 maxLength={10}
-                onChange={(e) => {
+                onChange={e => {
                   if (e.target.value.length <= 10) {
-                    handelChange(e);
+                    handelChange(e)
                   }
                 }}
                 placeholder=''
@@ -212,21 +210,20 @@ toast.error("Full Name is requried")
               />
             )}
           />
-             <Controller
+          <Controller
             name='contact'
             control={control}
-            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='number'
-                value={data?.phoneNumber2 || ""}
+                value={data?.phoneNumber2 || ''}
                 sx={{ mb: 4 }}
                 label='Mobile Number 2'
-                name="phoneNumber2"
-                onChange={(e) => {
+                name='phoneNumber2'
+                onChange={e => {
                   if (e.target.value.length <= 10) {
-                    handelChange(e);
+                    handelChange(e)
                   }
                 }}
                 placeholder=''
@@ -235,19 +232,18 @@ toast.error("Full Name is requried")
               />
             )}
           />
-          
+
           <Controller
             name='email'
             control={control}
-            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='email'
                 label='Email'
-                value={data?.email || ""}
+                value={data?.email || ''}
                 sx={{ mb: 4 }}
-                name="email"
+                name='email'
                 onChange={handelChange}
                 error={Boolean(errors.email)}
                 placeholder=''
@@ -255,54 +251,51 @@ toast.error("Full Name is requried")
               />
             )}
           />
-       
-     
-       
-       
-       <CustomTextField
-       fullWidth
-       placeholder=""
-        rows={4}
-        multiline
-        label='Address'
-        name="address"
-        value={data?.address || ""}
-                onChange={handelChange}
-        id='textarea-outlined-static'
-      />
 
-<Box border={"1px dotted #ccc"} borderRadius={1} mt={5} p={5}>
-<Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 300 } : {}}>
-      <input {...getInputProps()} />
-      {files.length ? (
-        img
-      ) : (
-        <Box sx={{ display: 'flex', textAlign: 'center', alignItems: 'center', flexDirection: 'column' }}>
-          <Box
-            sx={{
-              mb: 4.75,
-              width: 48,
-              height: 48,
-              display: 'flex',
-              borderRadius: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)`
-            }}
-          >
-            <Icon icon='tabler:upload' fontSize='1.75rem' />
-          </Box>
-          <Typography variant='h6' sx={{ mb: 2.5 }}>
-            Drop your profile photo here or click to upload your photo.
-          </Typography>
-          {/* <Typography sx={{ color: 'text.secondary', fontSize : 14 }}>
+          <CustomTextField
+            fullWidth
+            placeholder=''
+            rows={4}
+            multiline
+            label='Address'
+            name='address'
+            value={data?.address || ''}
+            onChange={handelChange}
+            id='textarea-outlined-static'
+          />
+
+          <Box border={'1px dotted #ccc'} borderRadius={1} mt={5} p={5}>
+            <Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 300 } : {}}>
+              <input {...getInputProps()} />
+              {files.length ? (
+                img
+              ) : (
+                <Box sx={{ display: 'flex', textAlign: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                  <Box
+                    sx={{
+                      mb: 4.75,
+                      width: 48,
+                      height: 48,
+                      display: 'flex',
+                      borderRadius: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)`
+                    }}
+                  >
+                    <Icon icon='tabler:upload' fontSize='1.75rem' />
+                  </Box>
+                  <Typography variant='h6' sx={{ mb: 2.5 }}>
+                    Drop your profile photo here or click to upload your photo.
+                  </Typography>
+                  {/* <Typography sx={{ color: 'text.secondary', fontSize : 14 }}>
             (This is just a demo drop zone. Selected files are not actually uploaded.)
           </Typography> */}
-        </Box>
-      )}
-    </Box>
-</Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt : 4 }}>
+                </Box>
+              )}
+            </Box>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 4 }}>
             <Button type='submit' variant='contained' sx={{ mr: 3 }}>
               Submit
             </Button>

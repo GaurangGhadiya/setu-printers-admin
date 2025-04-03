@@ -388,6 +388,7 @@ const Home = () => {
             sortingMode='none'
             pagination={false} // Disables pagination
             hideFooterPagination
+
             // pageSizeOptions={[10, 25, 50]}
             // paginationModel={paginationModel}
             // onPaginationModelChange={setPaginationModel}

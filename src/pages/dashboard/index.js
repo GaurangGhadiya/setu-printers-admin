@@ -62,6 +62,7 @@ const exportToExcel = (data, fileName = 'data.xlsx') => {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+
   const excelBlob = new Blob([excelBuffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   })
@@ -156,6 +157,7 @@ const User = () => {
 
       const filteredUsers = userList.filter(user => {
         const createdAt = new Date(user.created_at)
+
         return createdAt >= startDate && createdAt <= endDate
       })
       exportData = [...filteredUsers]
@@ -185,6 +187,7 @@ const User = () => {
       setStartDateRange(null)
       setEndDateRange(null)
     }
+
     let body = {
       searchName,
       startDate: startDateRange,
@@ -336,6 +339,7 @@ const User = () => {
     setStartDateRange(start)
     setEndDateRange(end)
   }
+
   const handleOnChangeRangeCSV = dates => {
     const [start, end] = dates
     setStartDateRangeCSV(start)
