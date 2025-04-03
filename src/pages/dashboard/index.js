@@ -46,28 +46,31 @@ import { Button, Modal } from '@mui/material'
 // ** Third Party Imports
 import format from 'date-fns/format'
 import addDays from 'date-fns/addDays'
-import { subDays } from 'date-fns';
+import { subDays } from 'date-fns'
 
 import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css'
+import moment from 'moment'
+import toast from 'react-hot-toast'
 
-// ** renders client column
-const userRoleObj = {
-  admin: { icon: 'tabler:device-laptop', color: 'secondary' },
-  author: { icon: 'tabler:circle-check', color: 'success' },
-  editor: { icon: 'tabler:edit', color: 'info' },
-  maintainer: { icon: 'tabler:chart-pie-2', color: 'primary' },
-  subscriber: { icon: 'tabler:user', color: 'warning' }
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
+
+const exportToExcel = (data, fileName = 'data.xlsx') => {
+  const worksheet = XLSX.utils.json_to_sheet(data) // Convert JSON to sheet
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+  const excelBlob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+
+  saveAs(excelBlob, fileName) // Download file
+  toast.success('CSV download successfull')
 }
 
-const userStatusObj = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
-
 // ** renders client column
-
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -110,10 +113,7 @@ const RowOptions = ({ id }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem
-          sx={{ '& svg': { mr: 2 } }}
-          onClick={handleRowOptionsClose}
-        >
+        <MenuItem sx={{ '& svg': { mr: 2 } }} onClick={handleRowOptionsClose}>
           <Icon icon='tabler:eye' fontSize={20} />
           View
         </MenuItem>
@@ -130,892 +130,202 @@ const RowOptions = ({ id }) => {
   )
 }
 
-const apiData = [
-  {
-      "stats": "21,459",
-      "title": "Session",
-      "trendDiff": "+29",
-      "icon": "tabler:user",
-      "subtitle": "Total Users"
-  },
-  {
-      "stats": "4,567",
-      "trendDiff": "+18",
-      "title": "Paid Users",
-      "avatarColor": "error",
-      "icon": "tabler:user-plus",
-      "subtitle": "Last week analytics"
-  },
-  {
-      "stats": "19,860",
-      "trendDiff": "-14",
-      "trend": "negative",
-      "title": "Active Users",
-      "avatarColor": "success",
-      "icon": "tabler:user-check",
-      "subtitle": "Last week analytics"
-  },
-  {
-      "stats": "237",
-      "trendDiff": "+42",
-      "title": "Pending Users",
-      "avatarColor": "warning",
-      "icon": "tabler:user-exclamation",
-      "subtitle": "Last week analytics"
-  }
-]
-
-const users = [
-  {
-      "id": 2,
-      "billing": "Manual - Paypal",
-      "fullName": "Halsey Redmore",
-      "company": "Skinder PVT LTD",
-      "role": "author",
-      "username": "hredmore1",
-      "country": "Albania",
-      "contact": "(472) 607-9137",
-      "email": "hredmore1@imgur.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 3,
-      "billing": "Manual - Cash",
-      "fullName": "Marjory Sicely",
-      "company": "Oozz PVT LTD",
-      "role": "maintainer",
-      "username": "msicely2",
-      "country": "Russia",
-      "contact": "(321) 264-4599",
-      "email": "msicely2@who.int",
-      "currentPlan": "enterprise",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 4,
-      "billing": "Auto Debit",
-      "fullName": "Cyrill Risby",
-      "company": "Oozz PVT LTD",
-      "role": "maintainer",
-      "username": "crisby3",
-      "country": "China",
-      "contact": "(923) 690-6806",
-      "email": "crisby3@wordpress.com",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 5,
-      "billing": "Auto Debit",
-      "fullName": "Maggy Hurran",
-      "company": "Aimbo PVT LTD",
-      "role": "subscriber",
-      "username": "mhurran4",
-      "country": "Pakistan",
-      "contact": "(669) 914-1078",
-      "email": "mhurran4@yahoo.co.jp",
-      "currentPlan": "enterprise",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 6,
-      "billing": "Manual - Cash",
-      "fullName": "Silvain Halstead",
-      "company": "Jaxbean PVT LTD",
-      "role": "author",
-      "username": "shalstead5",
-      "country": "China",
-      "contact": "(958) 973-3093",
-      "email": "shalstead5@shinystat.com",
-      "currentPlan": "company",
-      "status": "active",
-      "avatar": "/images/avatars/1.png",
-      "avatarColor": "error"
-  },
-  {
-      "id": 7,
-      "billing": "Manual - Paypal",
-      "fullName": "Breena Gallemore",
-      "company": "Jazzy PVT LTD",
-      "role": "subscriber",
-      "username": "bgallemore6",
-      "country": "Canada",
-      "contact": "(825) 977-8152",
-      "email": "bgallemore6@boston.com",
-      "currentPlan": "company",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png",
-      "avatarColor": "warning"
-  },
-  {
-      "id": 8,
-      "billing": "Auto Debit",
-      "fullName": "Kathryne Liger",
-      "company": "Pixoboo PVT LTD",
-      "role": "author",
-      "username": "kliger7",
-      "country": "France",
-      "contact": "(187) 440-0934",
-      "email": "kliger7@vinaora.com",
-      "currentPlan": "enterprise",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 9,
-      "billing": "Manual - Credit Card",
-      "fullName": "Franz Scotfurth",
-      "company": "Tekfly PVT LTD",
-      "role": "subscriber",
-      "username": "fscotfurth8",
-      "country": "China",
-      "contact": "(978) 146-5443",
-      "email": "fscotfurth8@dailymotion.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 10,
-      "billing": "Manual - Credit Card",
-      "fullName": "Jillene Bellany",
-      "company": "Gigashots PVT LTD",
-      "role": "maintainer",
-      "username": "jbellany9",
-      "country": "Jamaica",
-      "contact": "(589) 284-6732",
-      "email": "jbellany9@kickstarter.com",
-      "currentPlan": "company",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 11,
-      "billing": "Auto Debit",
-      "fullName": "Jonah Wharlton",
-      "company": "Eare PVT LTD",
-      "role": "subscriber",
-      "username": "jwharltona",
-      "country": "United States",
-      "contact": "(176) 532-6824",
-      "email": "jwharltona@oakley.com",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 12,
-      "billing": "Auto Debit",
-      "fullName": "Seth Hallam",
-      "company": "Yakitri PVT LTD",
-      "role": "subscriber",
-      "username": "shallamb",
-      "country": "Peru",
-      "contact": "(234) 464-0600",
-      "email": "shallamb@hugedomains.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 13,
-      "billing": "Manual - Cash",
-      "fullName": "Yoko Pottie",
-      "company": "Leenti PVT LTD",
-      "role": "subscriber",
-      "username": "ypottiec",
-      "country": "Philippines",
-      "contact": "(907) 284-5083",
-      "email": "ypottiec@privacy.gov.au",
-      "currentPlan": "basic",
-      "status": "inactive",
-      "avatar": "/images/avatars/7.png"
-  },
-  {
-      "id": 14,
-      "billing": "Manual - Paypal",
-      "fullName": "Maximilianus Krause",
-      "company": "Digitube PVT LTD",
-      "role": "author",
-      "username": "mkraused",
-      "country": "Democratic Republic of the Congo",
-      "contact": "(167) 135-7392",
-      "email": "mkraused@stanford.edu",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "/images/avatars/6.png"
-  },
-  {
-      "id": 15,
-      "billing": "Manual - Credit Card",
-      "fullName": "Zsazsa McCleverty",
-      "company": "Kaymbo PVT LTD",
-      "role": "maintainer",
-      "username": "zmcclevertye",
-      "country": "France",
-      "contact": "(317) 409-6565",
-      "email": "zmcclevertye@soundcloud.com",
-      "currentPlan": "enterprise",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 16,
-      "billing": "Auto Debit",
-      "fullName": "Bentlee Emblin",
-      "company": "Yambee PVT LTD",
-      "role": "author",
-      "username": "bemblinf",
-      "country": "Spain",
-      "contact": "(590) 606-1056",
-      "email": "bemblinf@wired.com",
-      "currentPlan": "company",
-      "status": "active",
-      "avatar": "/images/avatars/6.png"
-  },
-  {
-      "id": 17,
-      "billing": "Manual - Paypal",
-      "fullName": "Brockie Myles",
-      "company": "Wikivu PVT LTD",
-      "role": "maintainer",
-      "username": "bmylesg",
-      "country": "Poland",
-      "contact": "(553) 225-9905",
-      "email": "bmylesg@amazon.com",
-      "currentPlan": "basic",
-      "status": "active",
-      "avatar": "",
-      "avatarColor": "success"
-  },
-  {
-      "id": 18,
-      "billing": "Auto Debit",
-      "fullName": "Bertha Biner",
-      "company": "Twinte PVT LTD",
-      "role": "editor",
-      "username": "bbinerh",
-      "country": "Yemen",
-      "contact": "(901) 916-9287",
-      "email": "bbinerh@mozilla.com",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "/images/avatars/7.png"
-  },
-  {
-      "id": 19,
-      "billing": "Auto Debit",
-      "fullName": "Travus Bruntjen",
-      "company": "Cogidoo PVT LTD",
-      "role": "admin",
-      "username": "tbruntjeni",
-      "country": "France",
-      "contact": "(524) 586-6057",
-      "email": "tbruntjeni@sitemeter.com",
-      "currentPlan": "enterprise",
-      "status": "active",
-      "avatar": "",
-      "avatarColor": "primary"
-  },
-  {
-      "id": 20,
-      "billing": "Auto Debit",
-      "fullName": "Wesley Burland",
-      "company": "Bubblemix PVT LTD",
-      "role": "editor",
-      "username": "wburlandj",
-      "country": "Honduras",
-      "contact": "(569) 683-1292",
-      "email": "wburlandj@uiuc.edu",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "/images/avatars/6.png"
-  },
-  {
-      "id": 21,
-      "billing": "Manual - Cash",
-      "fullName": "Selina Kyle",
-      "company": "Wayne Enterprises",
-      "role": "admin",
-      "username": "catwomen1940",
-      "country": "USA",
-      "contact": "(829) 537-0057",
-      "email": "irena.dubrovna@wayne.com",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 22,
-      "billing": "Manual - Cash",
-      "fullName": "Jameson Lyster",
-      "company": "Quaxo PVT LTD",
-      "role": "editor",
-      "username": "jlysterl",
-      "country": "Ukraine",
-      "contact": "(593) 624-0222",
-      "email": "jlysterl@guardian.co.uk",
-      "currentPlan": "company",
-      "status": "inactive",
-      "avatar": "/images/avatars/8.png"
-  },
-  {
-      "id": 23,
-      "billing": "Manual - Paypal",
-      "fullName": "Kare Skitterel",
-      "company": "Ainyx PVT LTD",
-      "role": "maintainer",
-      "username": "kskitterelm",
-      "country": "Poland",
-      "contact": "(254) 845-4107",
-      "email": "kskitterelm@ainyx.com",
-      "currentPlan": "basic",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 24,
-      "billing": "Auto Debit",
-      "fullName": "Cleavland Hatherleigh",
-      "company": "Flipopia PVT LTD",
-      "role": "admin",
-      "username": "chatherleighn",
-      "country": "Brazil",
-      "contact": "(700) 783-7498",
-      "email": "chatherleighn@washington.edu",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 25,
-      "billing": "Manual - Paypal",
-      "fullName": "Adeline Micco",
-      "company": "Topicware PVT LTD",
-      "role": "admin",
-      "username": "amiccoo",
-      "country": "France",
-      "contact": "(227) 598-1841",
-      "email": "amiccoo@whitehouse.gov",
-      "currentPlan": "enterprise",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "error"
-  },
-  {
-      "id": 26,
-      "billing": "Manual - Credit Card",
-      "fullName": "Hugh Hasson",
-      "company": "Skinix PVT LTD",
-      "role": "admin",
-      "username": "hhassonp",
-      "country": "China",
-      "contact": "(582) 516-1324",
-      "email": "hhassonp@bizjournals.com",
-      "currentPlan": "basic",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 27,
-      "billing": "Manual - Cash",
-      "fullName": "Germain Jacombs",
-      "company": "Youopia PVT LTD",
-      "role": "editor",
-      "username": "gjacombsq",
-      "country": "Zambia",
-      "contact": "(137) 467-5393",
-      "email": "gjacombsq@jigsy.com",
-      "currentPlan": "enterprise",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 28,
-      "billing": "Manual - Cash",
-      "fullName": "Bree Kilday",
-      "company": "Jetpulse PVT LTD",
-      "role": "maintainer",
-      "username": "bkildayr",
-      "country": "Portugal",
-      "contact": "(412) 476-0854",
-      "email": "bkildayr@mashable.com",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "",
-      "avatarColor": "warning"
-  },
-  {
-      "id": 29,
-      "billing": "Auto Debit",
-      "fullName": "Candice Pinyon",
-      "company": "Kare PVT LTD",
-      "role": "maintainer",
-      "username": "cpinyons",
-      "country": "Sweden",
-      "contact": "(170) 683-1520",
-      "email": "cpinyons@behance.net",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "/images/avatars/7.png"
-  },
-  {
-      "id": 30,
-      "billing": "Manual - Cash",
-      "fullName": "Isabel Mallindine",
-      "company": "Voomm PVT LTD",
-      "role": "subscriber",
-      "username": "imallindinet",
-      "country": "Slovenia",
-      "contact": "(332) 803-1983",
-      "email": "imallindinet@shinystat.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "info"
-  },
-  {
-      "id": 31,
-      "billing": "Auto Debit",
-      "fullName": "Gwendolyn Meineken",
-      "company": "Oyondu PVT LTD",
-      "role": "admin",
-      "username": "gmeinekenu",
-      "country": "Moldova",
-      "contact": "(551) 379-7460",
-      "email": "gmeinekenu@hc360.com",
-      "currentPlan": "basic",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 32,
-      "billing": "Manual - Paypal",
-      "fullName": "Rafaellle Snowball",
-      "company": "Fivespan PVT LTD",
-      "role": "editor",
-      "username": "rsnowballv",
-      "country": "Philippines",
-      "contact": "(974) 829-0911",
-      "email": "rsnowballv@indiegogo.com",
-      "currentPlan": "basic",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 33,
-      "billing": "Manual - Credit Card",
-      "fullName": "Rochette Emer",
-      "company": "Thoughtworks PVT LTD",
-      "role": "admin",
-      "username": "remerw",
-      "country": "North Korea",
-      "contact": "(841) 889-3339",
-      "email": "remerw@blogtalkradio.com",
-      "currentPlan": "basic",
-      "status": "active",
-      "avatar": "/images/avatars/8.png"
-  },
-  {
-      "id": 34,
-      "billing": "Manual - Cash",
-      "fullName": "Ophelie Fibbens",
-      "company": "Jaxbean PVT LTD",
-      "role": "subscriber",
-      "username": "ofibbensx",
-      "country": "Indonesia",
-      "contact": "(764) 885-7351",
-      "email": "ofibbensx@booking.com",
-      "currentPlan": "company",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 35,
-      "billing": "Manual - Paypal",
-      "fullName": "Stephen MacGilfoyle",
-      "company": "Browseblab PVT LTD",
-      "role": "maintainer",
-      "username": "smacgilfoyley",
-      "country": "Japan",
-      "contact": "(350) 589-8520",
-      "email": "smacgilfoyley@bigcartel.com",
-      "currentPlan": "company",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "error"
-  },
-  {
-      "id": 36,
-      "billing": "Auto Debit",
-      "fullName": "Bradan Rosebotham",
-      "company": "Agivu PVT LTD",
-      "role": "subscriber",
-      "username": "brosebothamz",
-      "country": "Belarus",
-      "contact": "(882) 933-2180",
-      "email": "brosebothamz@tripadvisor.com",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "",
-      "avatarColor": "success"
-  },
-  {
-      "id": 37,
-      "billing": "Manual - Cash",
-      "fullName": "Skip Hebblethwaite",
-      "company": "Katz PVT LTD",
-      "role": "admin",
-      "username": "shebblethwaite10",
-      "country": "Canada",
-      "contact": "(610) 343-1024",
-      "email": "shebblethwaite10@arizona.edu",
-      "currentPlan": "company",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 38,
-      "billing": "Auto Debit",
-      "fullName": "Moritz Piccard",
-      "company": "Twitternation PVT LTD",
-      "role": "maintainer",
-      "username": "mpiccard11",
-      "country": "Croatia",
-      "contact": "(365) 277-2986",
-      "email": "mpiccard11@vimeo.com",
-      "currentPlan": "enterprise",
-      "status": "inactive",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 39,
-      "billing": "Manual - Paypal",
-      "fullName": "Tyne Widmore",
-      "company": "Yombu PVT LTD",
-      "role": "subscriber",
-      "username": "twidmore12",
-      "country": "Finland",
-      "contact": "(531) 731-0928",
-      "email": "twidmore12@bravesites.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "primary"
-  },
-  {
-      "id": 40,
-      "billing": "Auto Debit",
-      "fullName": "Florenza Desporte",
-      "company": "Kamba PVT LTD",
-      "role": "author",
-      "username": "fdesporte13",
-      "country": "Ukraine",
-      "contact": "(312) 104-2638",
-      "email": "fdesporte13@omniture.com",
-      "currentPlan": "company",
-      "status": "active",
-      "avatar": "/images/avatars/6.png"
-  },
-  {
-      "id": 41,
-      "billing": "Auto Debit",
-      "fullName": "Edwina Baldetti",
-      "company": "Dazzlesphere PVT LTD",
-      "role": "maintainer",
-      "username": "ebaldetti14",
-      "country": "Haiti",
-      "contact": "(315) 329-3578",
-      "email": "ebaldetti14@theguardian.com",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "info"
-  },
-  {
-      "id": 42,
-      "billing": "Manual - Credit Card",
-      "fullName": "Benedetto Rossiter",
-      "company": "Mybuzz PVT LTD",
-      "role": "editor",
-      "username": "brossiter15",
-      "country": "Indonesia",
-      "contact": "(323) 175-6741",
-      "email": "brossiter15@craigslist.org",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "",
-      "avatarColor": "warning"
-  },
-  {
-      "id": 43,
-      "billing": "Auto Debit",
-      "fullName": "Micaela McNirlan",
-      "company": "Tambee PVT LTD",
-      "role": "admin",
-      "username": "mmcnirlan16",
-      "country": "Indonesia",
-      "contact": "(242) 952-0916",
-      "email": "mmcnirlan16@hc360.com",
-      "currentPlan": "basic",
-      "status": "inactive",
-      "avatar": "",
-      "avatarColor": "error"
-  },
-  {
-      "id": 44,
-      "billing": "Manual - Paypal",
-      "fullName": "Vladamir Koschek",
-      "company": "Centimia PVT LTD",
-      "role": "author",
-      "username": "vkoschek17",
-      "country": "Guatemala",
-      "contact": "(531) 758-8335",
-      "email": "vkoschek17@abc.net.au",
-      "currentPlan": "team",
-      "status": "active",
-      "avatar": "",
-      "avatarColor": "success"
-  },
-  {
-      "id": 45,
-      "billing": "Manual - Cash",
-      "fullName": "Corrie Perot",
-      "company": "Flipopia PVT LTD",
-      "role": "subscriber",
-      "username": "cperot18",
-      "country": "China",
-      "contact": "(659) 385-6808",
-      "email": "cperot18@goo.ne.jp",
-      "currentPlan": "team",
-      "status": "pending",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 46,
-      "billing": "Manual - Credit Card",
-      "fullName": "Saunder Offner",
-      "company": "Skalith PVT LTD",
-      "role": "maintainer",
-      "username": "soffner19",
-      "country": "Poland",
-      "contact": "(200) 586-2264",
-      "email": "soffner19@mac.com",
-      "currentPlan": "enterprise",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "primary"
-  },
-  {
-      "id": 47,
-      "billing": "Auto Debit",
-      "fullName": "Karena Courtliff",
-      "company": "Feedfire PVT LTD",
-      "role": "admin",
-      "username": "kcourtliff1a",
-      "country": "China",
-      "contact": "(478) 199-0020",
-      "email": "kcourtliff1a@bbc.co.uk",
-      "currentPlan": "basic",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  },
-  {
-      "id": 48,
-      "billing": "Auto Debit",
-      "fullName": "Onfre Wind",
-      "company": "Thoughtmix PVT LTD",
-      "role": "admin",
-      "username": "owind1b",
-      "country": "Ukraine",
-      "contact": "(344) 262-7270",
-      "email": "owind1b@yandex.ru",
-      "currentPlan": "basic",
-      "status": "pending",
-      "avatar": "",
-      "avatarColor": "error"
-  },
-  {
-      "id": 49,
-      "billing": "Auto Debit",
-      "fullName": "Paulie Durber",
-      "company": "Babbleblab PVT LTD",
-      "role": "subscriber",
-      "username": "pdurber1c",
-      "country": "Sweden",
-      "contact": "(694) 676-1275",
-      "email": "pdurber1c@gov.uk",
-      "currentPlan": "team",
-      "status": "inactive",
-      "avatar": "",
-      "avatarColor": "warning"
-  },
-  {
-      "id": 50,
-      "billing": "Manual - Cash",
-      "fullName": "Beverlie Krabbe",
-      "company": "Kaymbo PVT LTD",
-      "role": "editor",
-      "username": "bkrabbe1d",
-      "country": "China",
-      "contact": "(397) 294-5153",
-      "email": "bkrabbe1d@home.pl",
-      "currentPlan": "company",
-      "status": "active",
-      "avatar": "/images/avatars/1.png"
-  }
-]
-
-
-
-
 const User = () => {
   // ** State
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null)
 
   const [value, setValue] = useState('')
   const [status, setStatus] = useState('')
   const [addUserOpen, setAddUserOpen] = useState(false)
-  
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
-  const [startDateRange, setStartDateRange] = useState(new Date())
-  const [endDateRange, setEndDateRange] = useState(subDays(new Date(), 45))
 
-  const handleClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
-  };
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [startDateRangeCSV, setStartDateRangeCSV] = useState(null)
+  const [endDateRangeCSV, setEndDateRangeCSV] = useState(null)
+  const [startDateRange, setStartDateRange] = useState(null)
+  const [endDateRange, setEndDateRange] = useState(null)
+  const [searchName, setSearchName] = useState('')
+  const [userList, setUserList] = useState([])
+  console.log('dates csv', { startDateRangeCSV, endDateRangeCSV })
+
+  const exportAsCsv = () => {
+    let exportData = [...userList]
+
+    if (startDateRangeCSV && endDateRangeCSV) {
+      const startDate = new Date(startDateRangeCSV)
+      const endDate = new Date(endDateRangeCSV)
+
+      const filteredUsers = userList.filter(user => {
+        const createdAt = new Date(user.created_at)
+        return createdAt >= startDate && createdAt <= endDate
+      })
+      exportData = [...filteredUsers]
+
+      console.log('filteredUsers', filteredUsers)
+    }
+
+    let finalData = exportData?.map(user => ({
+      Name: user?.user_data?.full_name,
+      Barcode: user?.barcode,
+      Selfie: process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + user.selfie,
+      CreatedDate: moment(user.created_at).format('DD-MM-YYYY hh:mm A')
+    }))
+
+    console.log('finalData', finalData)
+    if (finalData?.length > 0) {
+      exportToExcel(finalData)
+    } else {
+      toast.error('No data found between selected dates')
+    }
+  }
+
+  const getUser = async (e, clear) => {
+    console.log('clear', clear)
+    if (clear == true) {
+      setSearchName('')
+      setStartDateRange(null)
+      setEndDateRange(null)
+    }
+    let body = {
+      searchName,
+      startDate: startDateRange,
+      endDate: endDateRange
+    }
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/list`, clear ? {} : body)
+      .then(res => {
+        console.log('userList', res)
+        setUserList(res?.data?.data)
+      })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+  }
+
+  useEffect(() => {
+    getUser()
+  }, [])
+
+  const handleClick = imageUrl => {
+    setSelectedImage(imageUrl)
+  }
 
   const handleClose = () => {
-    setSelectedImage(null);
-  };
-  
-  const columns = [
-  {
-    flex: 0.20,
-    minWidth: 100,
-    field: 'fullName',
-    headerName: 'Thumbnail',
-    sortable : false,
-    renderCell: ({ row }) => {
-      const { fullName, email } = row
-
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {renderClient(row)}
-       
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    field: 'name',
-    minWidth: 270,
-    headerName: 'Name',
-    sortable : false,
-
-    renderCell: ({ row }) => {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        
-          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.fullName}
-          </Typography>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    field: 'email',
-    minWidth: 270,
-    headerName: 'QR Code Value',
-    sortable : false,
-
-    renderCell: ({ row }) => {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        
-          <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            ABCD1234
-          </Typography>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    minWidth: 200,
-    headerName: 'Date Time',
-    sortable : false,
-
-    field: 'Date Time',
-    renderCell: ({ row }) => {
-      return (
-        <Typography noWrap sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}>
-          27-04-2025 07:15PM
-        </Typography>
-      )
-    }
-  },
-
-  {
-    flex: 0.1,
-    minWidth: 100,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }) =>{
-      return (
-        <Box display={"flex"} alignItems={"center"} style={{cursor : "pointer"}}>
-           <Icon icon='tabler:trash' fontSize={20} color="red"/>&nbsp;
-        </Box>
-      )
-    }
-      
-      
-      
-      
-      
-      // <RowOptions id={row.id} />
+    setSelectedImage(null)
   }
-]
+
+  const handleDelete = async id => {
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCode/${id}`, {})
+      .then(res => {
+        console.log('user delete', res)
+        toast.success('User Delete Successfully')
+        getUser()
+      })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+  }
+
+  const columns = [
+    {
+      flex: 0.2,
+      minWidth: 100,
+      field: 'fullName',
+      headerName: 'Thumbnail',
+      sortable: false,
+      renderCell: ({ row }) => {
+        const { fullName, email } = row
+
+        return <Box sx={{ display: 'flex', alignItems: 'center' }}>{renderClient(row)}</Box>
+      }
+    },
+    {
+      flex: 0.25,
+      field: 'name',
+      minWidth: 270,
+      headerName: 'Name',
+      sortable: false,
+
+      renderCell: ({ row }) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row?.user_data?.full_name}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.25,
+      field: 'email',
+      minWidth: 270,
+      headerName: 'QR Code Value',
+      sortable: false,
+
+      renderCell: ({ row }) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              {row?.barcode}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.25,
+      minWidth: 200,
+      headerName: 'Date Time',
+      sortable: false,
+
+      field: 'Date Time',
+      renderCell: ({ row }) => {
+        return (
+          <Typography noWrap sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}>
+            {moment(row?.created_at).format('DD-MM-YYYY hh:mm A ')}
+          </Typography>
+        )
+      }
+    },
+
+    {
+      flex: 0.1,
+      minWidth: 100,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }) => {
+        return (
+          <Box
+            display={'flex'}
+            alignItems={'center'}
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleDelete(row?.id)}
+          >
+            <Icon icon='tabler:trash' fontSize={20} color='red' />
+            &nbsp;
+          </Box>
+        )
+      }
+
+      // <RowOptions id={row.id} />
+    }
+  ]
 
   const renderClient = row => {
-    if (row.avatar.length) {
-      return <CustomAvatar onClick={() => handleClick(row.avatar)} src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
-    } else {
+    if (row?.selfie) {
       return (
         <CustomAvatar
-          skin='light'
-          color={row.avatarColor}
-          sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
-        >
-          {getInitials(row.fullName ? row.fullName : 'John Doe')}
-        </CustomAvatar>
+          onClick={() => handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.selfie)}
+          src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.selfie}
+          sx={{ mr: 2.5, width: 38, height: 38, cursor: 'pointer' }}
+        />
       )
     }
   }
-
-
-  // ** Hooks
-  // const dispatch = useDispatch()
-  // const store = useSelector(state => state.user)
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchData({
-  //       role,
-  //       status,
-  //       q: value,
-  //       currentPlan: plan
-  //     })
-  //   )
-  // }, [dispatch, plan, role, status, value])
 
   const handleFilter = useCallback(val => {
     setValue(val)
@@ -1026,88 +336,85 @@ const User = () => {
     setStartDateRange(start)
     setEndDateRange(end)
   }
+  const handleOnChangeRangeCSV = dates => {
+    const [start, end] = dates
+    setStartDateRangeCSV(start)
+    setEndDateRangeCSV(end)
+  }
 
   const CustomInput = forwardRef((props, ref) => {
+    const startDate = props.start !== null ? format(props.start, 'dd/MM/yyyy') : ''
+    const endDate = props.end !== null ? ` - ${format(props.end, 'dd/MM/yyyy')}` : ''
+    const value = `${startDate}${endDate}` || 'Select start and end date'
 
-      const startDate = format(props.start, 'dd/MM/yyyy');
-      const endDate = props.end !== null ? ` - ${format(props.end, 'dd/MM/yyyy')}` : '';
-      const value = `${startDate}${endDate}`;
-    
-      return <CustomTextField fullWidth inputRef={ref} label={props.label || ''} {...props} value={value} />;
-    
-
-  });
+    return <CustomTextField fullWidth inputRef={ref} label={props.label || ''} {...props} value={value} />
+  })
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
   return (
     <Grid container spacing={6.5}>
-      {/* <Grid item xs={12}>
-        {apiData && (
-          <Grid container spacing={6}>
-            {apiData?.map((item, index) => {
-              return (
-                <Grid item xs={12} md={3} sm={6} key={index}>
-                  <CardStatsHorizontalWithDetails {...item} />
-                </Grid>
-              )
-            })}
-          </Grid>
-        )}
-      </Grid> */}
       <Grid item xs={12}>
         <Card>
           {/* <CardHeader title='Search Filters' /> */}
           <CardContent>
             <Grid container spacing={6}>
+              <Grid item sm={2} xs={12}>
+                <CustomTextField
+                  fullWidth
+                  sx={{ mr: 4 }}
+                  value={searchName || ''}
+                  placeholder='Search By User'
+                  onChange={e => setSearchName(e.target.value)}
+                />
+              </Grid>
               <Grid item sm={2.5} xs={12}>
-              <CustomTextField
-              fullWidth
-          value={value}
-          sx={{ mr: 4 }}
-          placeholder='Search By User'
-          onChange={e => handleFilter(e.target.value)}
-        />
+                <DatePicker
+                  selectsRange
+                  monthsShown={2}
+                  endDate={endDateRange}
+                  selected={startDateRange}
+                  startDate={startDateRange}
+                  shouldCloseOnSelect={false}
+                  id='date-range-picker-months'
+                  onChange={handleOnChangeRange}
+                  popperPlacement={'bottom-start'}
+                  customInput={<CustomInput label='' end={endDateRange} start={startDateRange} />}
+                />
               </Grid>
-              <Grid item sm={3} xs={12}>
-              <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={"bottom-start"}
-          customInput={<CustomInput label='' end={endDateRange} start={startDateRange} />}
-        />
-              </Grid>
-            
-              <Grid item sm={1.5} xs={12}>
-              <Button  variant='contained' startIcon={<Icon icon='tabler:search' />}>
-        Search
-      </Button>
 
+              <Grid item sm={1.5} xs={12}>
+                <Button
+                  variant='outlined'
+                  fullWidth
+                  startIcon={<Icon icon='tabler:x' />}
+                  onClick={e => getUser(e, true)}
+                >
+                  Clear
+                </Button>
               </Grid>
-              <Grid item sm={3} xs={12}>
-              <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={"bottom-start"}
-          customInput={<CustomInput label='' end={endDateRange} start={startDateRange} />}
-        />
+              <Grid item sm={1.5} xs={12}>
+                <Button variant='contained' fullWidth startIcon={<Icon icon='tabler:search' />} onClick={getUser}>
+                  Search
+                </Button>
+              </Grid>
+              <Grid item sm={2.5} xs={12}>
+                <DatePicker
+                  selectsRange
+                  monthsShown={2}
+                  endDate={endDateRangeCSV}
+                  selected={startDateRangeCSV}
+                  startDate={startDateRangeCSV}
+                  shouldCloseOnSelect={false}
+                  id='date-range-picker-months'
+                  onChange={handleOnChangeRangeCSV}
+                  popperPlacement={'bottom-start'}
+                  customInput={<CustomInput label='' end={endDateRangeCSV} start={startDateRangeCSV} />}
+                />
               </Grid>
               <Grid item sm={2} xs={12}>
-              <Button  variant='contained' startIcon={<Icon icon='tabler:search' />}>
-        Export as CSV
-      </Button>
-
+                <Button variant='contained' startIcon={<Icon icon='tabler:download' />} onClick={exportAsCsv}>
+                  Export as CSV
+                </Button>
               </Grid>
             </Grid>
           </CardContent>
@@ -1116,15 +423,17 @@ const User = () => {
           <DataGrid
             autoHeight
             rowHeight={62}
-            rows={users}
+            rows={userList}
             columns={columns}
             disableColumnFilter
             disableColumnMenu
             disableColumnSelector
             disableSelectionOnClick
             disableDensitySelector
-            sortingMode="none"
+            disableRowSelectionOnClick
+            sortingMode='none'
             pagination={false} // Disables pagination
+            hideFooterPagination // Disables pagination
           />
         </Card>
       </Grid>
@@ -1133,18 +442,18 @@ const User = () => {
       <Modal open={!!selectedImage} onClose={handleClose}>
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "white",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'white',
             boxShadow: 24,
             p: 2,
-            outline: "none",
-            borderRadius: 2,
+            outline: 'none',
+            borderRadius: 2
           }}
         >
-          {selectedImage && <img src={selectedImage} alt="Preview" width="300" />}
+          {selectedImage && <img src={selectedImage} alt='Preview' width='300' />}
         </Box>
       </Modal>
     </Grid>

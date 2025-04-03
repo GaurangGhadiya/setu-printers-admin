@@ -24,19 +24,13 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 // ** Actions Imports
 // import { addUser } from 'src/store/apps/user'
 
-const showErrors = (field, valueLen, min) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
+
 
 const Header = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -45,38 +39,10 @@ const Header = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between'
 }))
 
-const schema = yup.object().shape({
-  company: yup.string().required(),
-  billing: yup.string().required(),
-  country: yup.string().required(),
-  email: yup.string().email().required(),
-  contact: yup
-    .number()
-    .typeError('Contact Number field is required')
-    .min(10, obj => showErrors('Contact Number', obj.value.length, obj.min))
-    .required(),
-  fullName: yup
-    .string()
-    .min(3, obj => showErrors('First Name', obj.value.length, obj.min))
-    .required(),
-  username: yup
-    .string()
-    .min(3, obj => showErrors('Username', obj.value.length, obj.min))
-    .required()
-})
-
-const defaultValues = {
-  email: '',
-  company: '',
-  country: '',
-  billing: '',
-  fullName: '',
-  username: '',
-  contact: ""
-}
 
 const SidebarAddUser = props => {
   const [files, setFiles] = useState([])
+  const [data, setData] = useState({})
 
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
@@ -85,11 +51,12 @@ const SidebarAddUser = props => {
     },
     onDrop: acceptedFiles => {
       setFiles(acceptedFiles.map(file => Object.assign(file)))
+
     }
   })
 
   const img = files.map(file => (
-    <img key={file.name} alt={file.name} className='single-file-image' src={URL.createObjectURL(file)} />
+    <img key={file.name} alt={file.name} className='single-file-image' height={300} width={300} src={URL.createObjectURL(file)} />
   ))
 
   // ** Props
@@ -108,33 +75,60 @@ const SidebarAddUser = props => {
     control,
     setValue,
     setError,
-    handleSubmit,
     formState: { errors }
   } = useForm({
-    defaultValues,
-    mode: 'onChange',
-    resolver: yupResolver(schema)
+    // defaultValues,
+    // mode: 'onChange',
+    // resolver: yupResolver(schema)
   })
 
-  const onSubmit = data => {
-    if (store.allData.some(u => u.email === data.email || u.username === data.username)) {
-      store.allData.forEach(u => {
-        if (u.email === data.email) {
-          setError('email', {
-            message: 'Email already exists!'
-          })
-        }
-        if (u.username === data.username) {
-          setError('username', {
-            message: 'Username already exists!'
-          })
-        }
-      })
-    } else {
-      // dispatch(addUser({ ...data, role, currentPlan: plan }))
-      toggle()
-      reset()
-    }
+  function jsonToFormData(json) {
+    const formData = new FormData();
+
+    Object.keys(json).forEach(key => {
+        formData.append(key, json[key]);
+    });
+
+    return formData;
+}
+
+  const handleSubmit =async (e)  => {
+    e.preventDefault()
+
+    if(!data?.fullName){
+toast.error("Full Name is requried")
+    } else if(!data?.phoneNumber){
+      toast.error("Phone Number is requried")
+    }else if (!data?.phoneNumber2){
+      toast.error("Phone Number is requried")
+    }else if(!data?.email){
+      toast.error("Email is requried")
+    }else if (!data?.address){
+      toast.error("Address is requried")
+    }else{
+
+  
+
+    const formData = jsonToFormData({...data, profilePhoto : files?.[0]});
+
+    await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, formData).then(res => {
+      console.log('res', res)
+      toast.success("User Added Successfull")
+      handleClose()
+      props.getUser()
+    }).catch(e => {
+      console.log('e', e)
+      toast.error(e?.response?.data?.error?.message)
+
+    })
+
+  }
+
+  }
+
+  const handelChange = (e) => {
+    const {name, value} = e.target
+    setData({...data, [name] : value})
   }
 
   const handleClose = () => {
@@ -143,6 +137,8 @@ const SidebarAddUser = props => {
     setValue('contact', Number(''))
     toggle()
     reset()
+    setFiles([])
+    setData()
   }
 
   return (
@@ -173,19 +169,20 @@ const SidebarAddUser = props => {
         </IconButton>
       </Header>
       <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit}>
           <Controller
             name='fullName'
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
-                value={value}
+                value={data?.fullName || ""}
                 sx={{ mb: 4 }}
                 label='Full Name'
-                onChange={onChange}
-                placeholder='John Doe'
+                name="fullName"
+                onChange={handelChange}
+                placeholder=''
                 error={Boolean(errors.fullName)}
                 {...(errors.fullName && { helperText: errors.fullName.message })}
               />
@@ -194,16 +191,22 @@ const SidebarAddUser = props => {
              <Controller
             name='contact'
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='number'
-                value={value}
+                value={data?.phoneNumber || ""}
                 sx={{ mb: 4 }}
                 label='Mobile Number 1'
-                onChange={onChange}
-                placeholder='(397) 294-5153'
+                name="phoneNumber"
+                maxLength={10}
+                onChange={(e) => {
+                  if (e.target.value.length <= 10) {
+                    handelChange(e);
+                  }
+                }}
+                placeholder=''
                 error={Boolean(errors.contact)}
                 {...(errors.contact && { helperText: errors.contact.message })}
               />
@@ -212,16 +215,21 @@ const SidebarAddUser = props => {
              <Controller
             name='contact'
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='number'
-                value={value}
+                value={data?.phoneNumber2 || ""}
                 sx={{ mb: 4 }}
                 label='Mobile Number 2'
-                onChange={onChange}
-                placeholder='(397) 294-5153'
+                name="phoneNumber2"
+                onChange={(e) => {
+                  if (e.target.value.length <= 10) {
+                    handelChange(e);
+                  }
+                }}
+                placeholder=''
                 error={Boolean(errors.contact)}
                 {...(errors.contact && { helperText: errors.contact.message })}
               />
@@ -231,17 +239,18 @@ const SidebarAddUser = props => {
           <Controller
             name='email'
             control={control}
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
                 type='email'
                 label='Email'
-                value={value}
+                value={data?.email || ""}
                 sx={{ mb: 4 }}
-                onChange={onChange}
+                name="email"
+                onChange={handelChange}
                 error={Boolean(errors.email)}
-                placeholder='johndoe@email.com'
+                placeholder=''
                 {...(errors.email && { helperText: errors.email.message })}
               />
             )}
@@ -252,15 +261,18 @@ const SidebarAddUser = props => {
        
        <CustomTextField
        fullWidth
-       placeholder="Enter Address"
+       placeholder=""
         rows={4}
         multiline
-        label='Multiline'
+        label='Address'
+        name="address"
+        value={data?.address || ""}
+                onChange={handelChange}
         id='textarea-outlined-static'
       />
 
 <Box border={"1px dotted #ccc"} borderRadius={1} mt={5} p={5}>
-<Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 450 } : {}}>
+<Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 300 } : {}}>
       <input {...getInputProps()} />
       {files.length ? (
         img
