@@ -91,6 +91,10 @@ const User = () => {
     }
   }
 
+  const downloadApplication = async () => {
+    toast.success('Application Download Successfully')
+  }
+
   return (
     <Grid container spacing={6.5}>
       <Grid item xs={12}>
@@ -116,6 +120,20 @@ const User = () => {
               <Grid item sm={1.5} xs={12}>
                 <Button variant='contained' startIcon={<Icon icon='tabler:trash' />} onClick={handleDelete}>
                   Delete
+                </Button>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Card>
+          <CardHeader title='Download Application' />
+          <CardContent>
+            <Grid container spacing={6}>
+              <Grid item sm={1.5} xs={12}>
+                <Button variant='contained' startIcon={<Icon icon='tabler:download' />} onClick={downloadApplication}>
+                  Download
                 </Button>
               </Grid>
             </Grid>

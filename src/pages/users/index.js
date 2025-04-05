@@ -227,7 +227,7 @@ const Home = () => {
               <Icon icon={userRoleObj[row.role].icon} />
             </CustomAvatar> */}
             <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'lowercase' }}>
-              {row?.email}
+              {row?.email || '-'}
             </Typography>
           </Box>
         )
@@ -258,7 +258,7 @@ const Home = () => {
       renderCell: ({ row }) => {
         return (
           <Typography noWrap sx={{ color: 'text.secondary' }}>
-            {row?.phone_number_2}
+            {row?.phone_number_2 || '-'}
           </Typography>
         )
       }

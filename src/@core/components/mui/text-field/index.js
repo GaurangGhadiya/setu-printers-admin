@@ -157,14 +157,24 @@ const TextFieldStyled = styled(TextField)(({ theme }) => ({
 
 const CustomTextField = forwardRef((props, ref) => {
   // ** Props
-  const { size = 'small', InputLabelProps, ...rest } = props
+  const { size = 'small', InputLabelProps, requiredd = false, label, ...rest } = props
 
   return (
     <TextFieldStyled
       size={size}
       inputRef={ref}
+      // required={requiredd}
       {...rest}
       variant='filled'
+      label={
+        requiredd && label ? (
+          <span>
+            {label} <span style={{ color: 'red' }}>*</span>
+          </span>
+        ) : (
+          label
+        )
+      }
       InputLabelProps={{ ...InputLabelProps, shrink: true }}
     />
   )

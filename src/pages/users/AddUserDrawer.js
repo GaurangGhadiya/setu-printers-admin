@@ -102,12 +102,12 @@ const SidebarAddUser = props => {
       toast.error('Full Name is requried')
     } else if (!data?.phoneNumber) {
       toast.error('Phone Number is requried')
-    } else if (!data?.phoneNumber2) {
-      toast.error('Phone Number is requried')
-    } else if (!data?.email) {
-      toast.error('Email is requried')
-    } else if (!data?.address) {
-      toast.error('Address is requried')
+      // } else if (!data?.phoneNumber2) {
+      //   toast.error('Phone Number is requried')
+      // } else if (!data?.email) {
+      //   toast.error('Email is requried')
+      // } else if (!data?.address) {
+      //   toast.error('Address is requried')
     } else {
       const formData = jsonToFormData({ ...data, profilePhoto: files?.[0] })
 
@@ -180,6 +180,7 @@ const SidebarAddUser = props => {
                 sx={{ mb: 4 }}
                 label='Full Name'
                 name='fullName'
+                requiredd
                 onChange={handelChange}
                 placeholder=''
                 error={Boolean(errors.fullName)}
@@ -196,6 +197,7 @@ const SidebarAddUser = props => {
                 type='number'
                 value={data?.phoneNumber || ''}
                 sx={{ mb: 4 }}
+                requiredd
                 label='Mobile Number 1'
                 name='phoneNumber'
                 maxLength={10}
