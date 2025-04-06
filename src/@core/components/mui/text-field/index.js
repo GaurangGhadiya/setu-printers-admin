@@ -163,7 +163,6 @@ const CustomTextField = forwardRef((props, ref) => {
     <TextFieldStyled
       size={size}
       inputRef={ref}
-      // required={requiredd}
       {...rest}
       variant='filled'
       label={

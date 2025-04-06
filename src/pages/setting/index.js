@@ -100,7 +100,9 @@ const User = () => {
     // document.body.appendChild(link)
     // link.click()
     // document.body.removeChild(link)
+
     window.open('https://drive.google.com/uc?export=download&id=1g0qQdd0uBWEyux72e64SVKfzOCy3HpAp', '_blank')
+
     // toast.success('Application Download Successfully')
   }
 

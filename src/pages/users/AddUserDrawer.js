@@ -102,6 +102,7 @@ const SidebarAddUser = props => {
       toast.error('Full Name is requried')
     } else if (!data?.phoneNumber) {
       toast.error('Phone Number is requried')
+
       // } else if (!data?.phoneNumber2) {
       //   toast.error('Phone Number is requried')
       // } else if (!data?.email) {
