@@ -322,7 +322,11 @@ const User = () => {
     if (row?.selfie) {
       return (
         <CustomAvatar
-          onClick={() => handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.selfie)}
+          onClick={() =>
+            row?.selfie
+              ? handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.selfie)
+              : toast.error('No image found')
+          }
           src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.selfie}
           sx={{ mr: 2.5, width: 38, height: 38, cursor: 'pointer' }}
         />

@@ -41,7 +41,7 @@ import axios from 'axios'
 // ** Custom Table Components Imports
 import TableHeader from './TableHeader'
 import AddUserDrawer from './AddUserDrawer'
-import { Button } from '@mui/material'
+import { Button, Modal } from '@mui/material'
 import toast from 'react-hot-toast'
 
 // ** renders client column
@@ -60,16 +60,6 @@ const userStatusObj = {
 }
 
 // ** renders client column
-const renderClient = row => {
-  if (row?.profile_photo) {
-    return (
-      <CustomAvatar
-        src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo}
-        sx={{ mr: 2.5, width: 38, height: 38 }}
-      />
-    )
-  }
-}
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -139,7 +129,33 @@ const Home = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [userList, setUserList] = useState([])
   const [filterData, setFilterData] = useState({})
+  const [selectedImage, setSelectedImage] = useState(null)
+
   console.log('filterData', filterData)
+
+  const handleClick = imageUrl => {
+    setSelectedImage(imageUrl)
+  }
+
+  const handleClose = () => {
+    setSelectedImage(null)
+  }
+
+  const renderClient = row => {
+    if (row?.profile_photo) {
+      return (
+        <CustomAvatar
+          onClick={() =>
+            row?.profile_photo != 'null'
+              ? handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo)
+              : toast.error('No image found')
+          }
+          src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo}
+          sx={{ mr: 2.5, width: 38, height: 38, cursor: 'pointer' }}
+        />
+      )
+    }
+  }
 
   const getUser = async clear => {
     console.log('clear', clear)
@@ -397,6 +413,23 @@ const Home = () => {
       </Grid>
 
       <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} getUser={getUser} />
+      <Modal open={!!selectedImage} onClose={handleClose}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'white',
+            boxShadow: 24,
+            p: 2,
+            outline: 'none',
+            borderRadius: 2
+          }}
+        >
+          {selectedImage && <img src={selectedImage} alt='Preview' width='300' />}
+        </Box>
+      </Modal>
     </Grid>
   )
 }

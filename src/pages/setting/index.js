@@ -92,14 +92,23 @@ const User = () => {
   }
 
   const downloadApplication = async () => {
-    toast.success('Application Download Successfully')
+    // const apkUrl = 'https://drive.google.com/uc?export=download&id=15uManNiZWw8wigdUaBFv7rT_HB8q7C9y'
+    // const apkUrl = 'https://drive.google.com/uc?export=download&id=1g0qQdd0uBWEyux72e64SVKfzOCy3HpAp'
+    // const link = document.createElement('a')
+    // link.href = apkUrl
+    // link.setAttribute('download', 'setuprinters.apk') // optional - sets the filename
+    // document.body.appendChild(link)
+    // link.click()
+    // document.body.removeChild(link)
+    window.open('https://drive.google.com/uc?export=download&id=1g0qQdd0uBWEyux72e64SVKfzOCy3HpAp', '_blank')
+    // toast.success('Application Download Successfully')
   }
 
   return (
     <Grid container spacing={6.5}>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Select date for delete users' />
+          <CardHeader title='Select date for delete users data' />
           <CardContent>
             <Grid container spacing={6}>
               <Grid item sm={5} xs={12}>
