@@ -149,9 +149,11 @@ const User = () => {
   const [userList, setUserList] = useState([])
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
+
   const handleCloseDelete = () => {
     setOpen(false)
   }
+
   const handleSave = async () => {
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCode/${deleteId}`, {})
@@ -167,6 +169,7 @@ const User = () => {
         toast.error(e?.response?.data?.error?.message)
       })
   }
+
   const exportAsCsv = () => {
     let exportData = [...userList]
 

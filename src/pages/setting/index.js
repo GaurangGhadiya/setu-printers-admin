@@ -56,9 +56,11 @@ const User = () => {
   const [startDateRange, setStartDateRange] = useState(null)
   const [endDateRange, setEndDateRange] = useState(null)
   const [open, setOpen] = useState(false)
+
   const handleClose = () => {
     setOpen(false)
   }
+
   const handleSave = async () => {
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCodeByDate`, {

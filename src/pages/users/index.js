@@ -133,9 +133,11 @@ const Home = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
+
   const handleCloseDelete = () => {
     setOpen(false)
   }
+
   const handleSave = async () => {
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/delete/${deleteId}`, {})
