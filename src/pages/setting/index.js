@@ -49,11 +49,34 @@ import { subDays } from 'date-fns'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import toast from 'react-hot-toast'
+import AlertDialogSlide from './DeleteDilog'
 
 const User = () => {
   // ** State
   const [startDateRange, setStartDateRange] = useState(null)
   const [endDateRange, setEndDateRange] = useState(null)
+  const [open, setOpen] = useState(false)
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleSave = async () => {
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCodeByDate`, {
+        startDate: startDateRange,
+        endDate: endDateRange
+      })
+      .then(res => {
+        console.log('user delete', res)
+        setStartDateRange(null)
+        setEndDateRange(null)
+        toast.success('Data Detele Successfully')
+        setOpen(false)
+      })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+  }
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
@@ -73,34 +96,11 @@ const User = () => {
     if (!startDateRange || !endDateRange) {
       toast.error('Please select start and end date')
     } else {
-      await axios
-        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCodeByDate`, {
-          startDate: startDateRange,
-          endDate: endDateRange
-        })
-        .then(res => {
-          console.log('user delete', res)
-          setStartDateRange(null)
-          setEndDateRange(null)
-          toast.success('Data Detele Successfully')
-        })
-        .catch(e => {
-          console.log('e', e)
-          toast.error(e?.response?.data?.error?.message)
-        })
+      setOpen(true)
     }
   }
 
   const downloadApplication = async () => {
-    // const apkUrl = 'https://drive.google.com/uc?export=download&id=15uManNiZWw8wigdUaBFv7rT_HB8q7C9y'
-    // const apkUrl = 'https://drive.google.com/uc?export=download&id=1g0qQdd0uBWEyux72e64SVKfzOCy3HpAp'
-    // const link = document.createElement('a')
-    // link.href = apkUrl
-    // link.setAttribute('download', 'setuprinters.apk') // optional - sets the filename
-    // document.body.appendChild(link)
-    // link.click()
-    // document.body.removeChild(link)
-
     window.open('https://drive.google.com/uc?export=download&id=1g0qQdd0uBWEyux72e64SVKfzOCy3HpAp', '_blank')
 
     // toast.success('Application Download Successfully')
@@ -151,6 +151,12 @@ const User = () => {
           </CardContent>
         </Card>
       </Grid>
+      <AlertDialogSlide
+        open={open}
+        handleClose={handleClose}
+        handleSave={handleSave}
+        message={'Are you sure you want to delete this user data?'}
+      />
     </Grid>
   )
 }

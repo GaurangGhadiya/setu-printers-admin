@@ -43,6 +43,7 @@ import TableHeader from './TableHeader'
 import AddUserDrawer from './AddUserDrawer'
 import { Button, Modal } from '@mui/material'
 import toast from 'react-hot-toast'
+import AlertDialogSlide from '../setting/DeleteDilog'
 
 // ** renders client column
 const userRoleObj = {
@@ -130,6 +131,26 @@ const Home = () => {
   const [userList, setUserList] = useState([])
   const [filterData, setFilterData] = useState({})
   const [selectedImage, setSelectedImage] = useState(null)
+  const [open, setOpen] = useState(false)
+  const [deleteId, setDeleteId] = useState(null)
+  const handleCloseDelete = () => {
+    setOpen(false)
+  }
+  const handleSave = async () => {
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/delete/${deleteId}`, {})
+      .then(res => {
+        console.log('user delete', res)
+        toast.success('User Delete Successfully')
+        getUser()
+        setDeleteId(null)
+        setOpen(false)
+      })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+  }
 
   console.log('filterData', filterData)
 
@@ -292,7 +313,10 @@ const Home = () => {
             display={'flex'}
             alignItems={'center'}
             style={{ cursor: 'pointer' }}
-            onClick={() => handleDelete(row?.user_id)}
+            onClick={() => {
+              setOpen(true)
+              setDeleteId(row?.user_id)
+            }}
           >
             <Icon icon='tabler:trash' fontSize={20} color='red' />
             &nbsp;
@@ -430,6 +454,12 @@ const Home = () => {
           {selectedImage && <img src={selectedImage} alt='Preview' width='300' />}
         </Box>
       </Modal>
+      <AlertDialogSlide
+        open={open}
+        handleClose={handleCloseDelete}
+        handleSave={handleSave}
+        message={'Are you sure you want to delete this user?'}
+      />
     </Grid>
   )
 }

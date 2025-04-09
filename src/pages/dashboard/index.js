@@ -55,6 +55,7 @@ import toast from 'react-hot-toast'
 
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
+import AlertDialogSlide from '../setting/DeleteDilog'
 
 const exportToExcel = (data, fileName = 'data.xlsx') => {
   const worksheet = XLSX.utils.json_to_sheet(data) // Convert JSON to sheet
@@ -146,8 +147,26 @@ const User = () => {
   const [endDateRange, setEndDateRange] = useState(null)
   const [searchName, setSearchName] = useState('')
   const [userList, setUserList] = useState([])
-  console.log('dates csv', { startDateRangeCSV, endDateRangeCSV })
-
+  const [open, setOpen] = useState(false)
+  const [deleteId, setDeleteId] = useState(null)
+  const handleCloseDelete = () => {
+    setOpen(false)
+  }
+  const handleSave = async () => {
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCode/${deleteId}`, {})
+      .then(res => {
+        console.log('user delete', res)
+        toast.success('User Delete Successfully')
+        getUser()
+        setDeleteId(null)
+        setOpen(false)
+      })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+  }
   const exportAsCsv = () => {
     let exportData = [...userList]
 
@@ -306,7 +325,10 @@ const User = () => {
             display={'flex'}
             alignItems={'center'}
             style={{ cursor: 'pointer' }}
-            onClick={() => handleDelete(row?.id)}
+            onClick={() => {
+              setOpen(true)
+              setDeleteId(row?.id)
+            }}
           >
             <Icon icon='tabler:trash' fontSize={20} color='red' />
             &nbsp;
@@ -464,6 +486,12 @@ const User = () => {
           {selectedImage && <img src={selectedImage} alt='Preview' width='300' />}
         </Box>
       </Modal>
+      <AlertDialogSlide
+        open={open}
+        handleClose={handleCloseDelete}
+        handleSave={handleSave}
+        message={'Are you sure you want to delete this data?'}
+      />
     </Grid>
   )
 }
