@@ -143,8 +143,8 @@ const User = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [startDateRangeCSV, setStartDateRangeCSV] = useState(null)
   const [endDateRangeCSV, setEndDateRangeCSV] = useState(null)
-  const [startDateRange, setStartDateRange] = useState(null)
-  const [endDateRange, setEndDateRange] = useState(null)
+  const [startDateRange, setStartDateRange] = useState(new Date())
+  const [endDateRange, setEndDateRange] = useState(new Date())
   const [searchName, setSearchName] = useState('')
   const [userList, setUserList] = useState([])
   const [open, setOpen] = useState(false)
@@ -407,7 +407,6 @@ const User = () => {
                   endDate={endDateRange}
                   selected={startDateRange}
                   startDate={startDateRange}
-                  shouldCloseOnSelect={false}
                   id='date-range-picker-months'
                   onChange={handleOnChangeRange}
                   popperPlacement={'bottom-start'}
@@ -437,7 +436,6 @@ const User = () => {
                   endDate={endDateRangeCSV}
                   selected={startDateRangeCSV}
                   startDate={startDateRangeCSV}
-                  shouldCloseOnSelect={false}
                   id='date-range-picker-months'
                   onChange={handleOnChangeRangeCSV}
                   popperPlacement={'bottom-start'}

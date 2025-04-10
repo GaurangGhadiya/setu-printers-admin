@@ -22,3 +22,7 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

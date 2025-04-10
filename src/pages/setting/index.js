@@ -122,7 +122,6 @@ const User = () => {
                   endDate={endDateRange}
                   selected={startDateRange}
                   startDate={startDateRange}
-                  shouldCloseOnSelect={false}
                   id='date-range-picker-months'
                   onChange={handleOnChangeRange}
                   popperPlacement={'bottom-start'}
