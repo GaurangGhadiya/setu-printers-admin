@@ -19,6 +19,11 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import { IconButton, InputAdornment } from '@mui/material'
+import { useState } from 'react'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 // Styled Components
 const ForgotPasswordIllustration = styled('img')(({ theme }) => ({
@@ -59,6 +64,48 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const ForgotPassword = () => {
   // ** Hooks
   const theme = useTheme()
+  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword2, setShowPassword2] = useState(false)
+  const [showPassword3, setShowPassword3] = useState(false)
+  const [formData, setFormData] = useState({})
+
+  console.log('formData', formData)
+
+  const handleChange = e => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleSubmit = async () => {
+    if (!formData.email) {
+      toast.error('email is requried')
+    } else if (!formData.oldPassword) {
+      toast.error('Old password is requried')
+    } else if (!formData.newPassword) {
+      toast.error('New password is requried')
+    } else if (!formData.newPassword2) {
+      toast.error('Confirm password is requried')
+    } else if (formData.newPassword != formData.newPassword2) {
+      toast.error('New password and Confirm Password is not match')
+    } else {
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/auth/forgotPassword`, {
+          email: formData.email,
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword
+        })
+        .then(res => {
+          console.log('user login', res)
+          toast.success('Forgot Password Successfully')
+          router.replace('/login')
+        })
+        .catch(e => {
+          console.log('e', e)
+          toast.error(e?.response?.data?.error?.message)
+        })
+    }
+  }
 
   // ** Vars
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
@@ -128,14 +175,89 @@ const ForgotPassword = () => {
               <Typography sx={{ mb: 1.5, fontWeight: 500, fontSize: '1.625rem', lineHeight: 1.385 }}>
                 Forgot Password? 🔒
               </Typography>
-              <Typography sx={{ color: 'text.secondary' }}>
+              {/* <Typography sx={{ color: 'text.secondary' }}>
                 Enter your email and we&prime;ll send you instructions to reset your password
-              </Typography>
+              </Typography> */}
             </Box>
             <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <CustomTextField fullWidth autoFocus type='email' label='Email' sx={{ display: 'flex', mb: 4 }} />
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
-                Send reset link
+              <CustomTextField
+                fullWidth
+                autoFocus
+                type={'email'}
+                label='Email'
+                sx={{ display: 'flex', mb: 4 }}
+                onChange={handleChange}
+                name='email' // ← add this line
+                value={formData?.email || ''}
+              />
+              <CustomTextField
+                fullWidth
+                type={showPassword ? 'text' : 'password'}
+                label='Old Password'
+                sx={{ display: 'flex', mb: 4 }}
+                onChange={handleChange}
+                name='oldPassword' // ← add this line
+                value={formData?.oldPassword || ''}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <CustomTextField
+                fullWidth
+                type={showPassword2 ? 'text' : 'password'}
+                label='New Password'
+                sx={{ display: 'flex', mb: 4 }}
+                onChange={handleChange}
+                name='newPassword' // ← add this line
+                value={formData?.newPassword || ''}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => setShowPassword2(!showPassword2)}
+                      >
+                        <Icon fontSize='1.25rem' icon={showPassword2 ? 'tabler:eye' : 'tabler:eye-off'} />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <CustomTextField
+                fullWidth
+                type={showPassword3 ? 'text' : 'password'}
+                label='Confirm Password'
+                sx={{ display: 'flex', mb: 4 }}
+                onChange={handleChange}
+                name='newPassword2' // ← add this line
+                value={formData?.newPassword2 || ''}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => setShowPassword3(!showPassword3)}
+                      >
+                        <Icon fontSize='1.25rem' icon={showPassword3 ? 'tabler:eye' : 'tabler:eye-off'} />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Button fullWidth type='button' onClick={handleSubmit} variant='contained' sx={{ mb: 4 }}>
+                Forgot Password
               </Button>
               <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', '& svg': { mr: 1 } }}>
                 <LinkStyled href='/login'>

@@ -42,6 +42,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import Image from 'next/image'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -83,15 +86,16 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
-  password: yup.string().min(5).required()
+  password: yup.string().required()
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@gmail.com'
+  password: '',
+  email: ''
 }
 
 const LoginPage = () => {
+  const router = useRouter()
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -116,14 +120,30 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/auth/login`, { email, password })
+      .then(res => {
+        console.log('user login', res)
+        toast.success('Login Successfully')
+        localStorage.setItem('userData', JSON.stringify({ ...res.data?.data, id: 1, role: 'admin' }))
+        localStorage.setItem(
+          'accessToken',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0MzgwMTIxLCJleHAiOjE3NDQzODA0MjF9.8vMTNk7HpQocuCnpY4xp12vVEtsFSs7unMiXKpPAhA8'
+        )
+        router.replace('/dashboard')
       })
-    })
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
+    // auth.login({ email, password, rememberMe }, () => {
+    //   setError('email', {
+    //     type: 'manual',
+    //     message: 'Email or Password is invalid'
+    //   })
+    // })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -157,14 +177,12 @@ const LoginPage = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-           {/* <Image src={"/images/logo.jpeg"} height={50} width={50} alt="image"/> */}
+            {/* <Image src={"/images/logo.jpeg"} height={50} width={50} alt="image"/> */}
             <Box sx={{ my: 6 }}>
               <Typography variant='h3' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
               </Typography>
-              <Typography sx={{ color: 'text.secondary' }}>
-                Please sign-in to your account 
-              </Typography>
+              <Typography sx={{ color: 'text.secondary' }}>Please sign-in to your account</Typography>
             </Box>
             {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
@@ -241,9 +259,9 @@ const LoginPage = () => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                {/* <Typography component={LinkStyled} href='/forgot-password'>
+                <Typography component={LinkStyled} href='/forgot-password'>
                   Forgot Password?
-                </Typography> */}
+                </Typography>
               </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Login
