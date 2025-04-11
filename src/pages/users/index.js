@@ -133,6 +133,7 @@ const Home = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
+  const [dropdownList, setDropdownList] = useState([])
 
   const handleCloseDelete = () => {
     setOpen(false)
@@ -197,13 +198,17 @@ const Home = () => {
       })
   }
 
-  const handleDelete = async id => {
+  const userDropdown = async () => {
     await axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/delete/${id}`, {})
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/list`, {})
       .then(res => {
-        console.log('user delete', res)
-        toast.success('User Delete Successfully')
-        getUser()
+        console.log('user all data', res?.data?.data)
+
+        const uniqueById = Array.from(new Map(res?.data?.data?.map(item => [item?.full_name, item])).values())
+        console.log('uniqueById', uniqueById)
+        setDropdownList(uniqueById)
+        // toast.success('User Delete Successfully')
+        // getUser()
       })
       .catch(e => {
         console.log('e', e)
@@ -213,6 +218,7 @@ const Home = () => {
 
   useEffect(() => {
     getUser()
+    userDropdown()
   }, [])
 
   const columns = [
@@ -365,15 +371,35 @@ const Home = () => {
           <CardHeader title='Search Filters' />
           <CardContent>
             <Grid container spacing={6}>
-              <Grid item sm={3} xs={12}>
-                <CustomTextField
+              <Grid item sm={3} xs={12} style={{ position: 'relative' }}>
+                {/* <CustomTextField
                   fullWidth
                   name='name'
                   value={filterData?.searchName || ''}
                   sx={{ mr: 4 }}
                   placeholder='Search By Name'
                   onChange={e => setFilterData({ ...filterData, searchName: e.target.value })}
-                />
+                /> */}
+                <CustomTextField
+                  select
+                  fullWidth
+                  defaultValue={'searchName'}
+                  id='custom-select'
+                  value={filterData?.searchName || ''}
+                  onChange={e => setFilterData({ ...filterData, searchName: e.target.value })}
+                >
+                  {/* <MenuItem disable value=''>
+                                    <em>Search By User</em>
+                                  </MenuItem> */}
+                  {dropdownList?.map(v => (
+                    <MenuItem value={v?.full_name}>{v?.full_name}</MenuItem>
+                  ))}
+                </CustomTextField>
+                {!filterData?.searchName && (
+                  <Typography position={'absolute'} top={33} left={40} zIndex={999}>
+                    Select User
+                  </Typography>
+                )}
               </Grid>
               <Grid item sm={3} xs={12}>
                 <CustomTextField
