@@ -207,6 +207,7 @@ const Home = () => {
         const uniqueById = Array.from(new Map(res?.data?.data?.map(item => [item?.full_name, item])).values())
         console.log('uniqueById', uniqueById)
         setDropdownList(uniqueById)
+
         // toast.success('User Delete Successfully')
         // getUser()
       })
@@ -388,11 +389,10 @@ const Home = () => {
                   value={filterData?.searchName || ''}
                   onChange={e => setFilterData({ ...filterData, searchName: e.target.value })}
                 >
-                  {/* <MenuItem disable value=''>
-                                    <em>Search By User</em>
-                                  </MenuItem> */}
                   {dropdownList?.map(v => (
-                    <MenuItem value={v?.full_name}>{v?.full_name}</MenuItem>
+                    <MenuItem key={v?.full_name} value={v?.full_name}>
+                      {v?.full_name}
+                    </MenuItem>
                   ))}
                 </CustomTextField>
                 {!filterData?.searchName && (

@@ -250,6 +250,7 @@ const User = () => {
         const uniqueById = Array.from(new Map(res?.data?.data?.map(item => [item.user_data?.full_name, item])).values())
         console.log('uniqueById', uniqueById)
         setDropdownList(uniqueById)
+
         // toast.success('User Delete Successfully')
         // getUser()
       })
@@ -417,7 +418,9 @@ const User = () => {
                     <em>Search By User</em>
                   </MenuItem> */}
                   {dropdownList?.map(v => (
-                    <MenuItem value={v?.user_data?.full_name}>{v?.user_data?.full_name}</MenuItem>
+                    <MenuItem key={v} value={v?.user_data?.full_name}>
+                      {v?.user_data?.full_name}
+                    </MenuItem>
                   ))}
                 </CustomTextField>
                 {!searchName && (

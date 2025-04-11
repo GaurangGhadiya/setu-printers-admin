@@ -138,6 +138,7 @@ const LoginPage = () => {
         console.log('e', e)
         toast.error(e?.response?.data?.error?.message)
       })
+
     // auth.login({ email, password, rememberMe }, () => {
     //   setError('email', {
     //     type: 'manual',

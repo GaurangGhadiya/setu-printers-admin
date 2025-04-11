@@ -6,6 +6,7 @@ import VerticalNavSectionTitle from './VerticalNavSectionTitle'
 const resolveNavItemComponent = item => {
   if (item.sectionTitle) return VerticalNavSectionTitle
   if (item.children) return VerticalNavGroup
+
   return VerticalNavLink
 }
 
