@@ -1,6 +1,6 @@
 // ** Next Imports
 import Head from 'next/head'
-import { Router } from 'next/router'
+import { Router, useRouter } from 'next/router'
 
 // ** Loader Import
 import NProgress from 'nprogress'
@@ -51,6 +51,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { useEffect } from 'react'
 
 const clientSideEmotionCache = createEmotionCache()
 

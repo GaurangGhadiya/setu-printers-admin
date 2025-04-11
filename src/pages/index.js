@@ -1,5 +1,21 @@
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+
 const Home = () => {
-  return <>Home Page</>
+  const router = useRouter()
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const userData = localStorage.getItem('userData')
+    if (userData) {
+      setUser(JSON.parse(userData))
+      router.push('/dashboard')
+    } else {
+      router.push('/login')
+    }
+  }, [])
+
+  return <></>
 }
 
 export default Home
