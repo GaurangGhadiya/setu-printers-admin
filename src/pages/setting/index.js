@@ -50,9 +50,11 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import toast from 'react-hot-toast'
 import AlertDialogSlide from './DeleteDilog'
+import { useRouter } from 'next/router'
 
 const User = () => {
   // ** State
+  const router = useRouter()
   const [startDateRange, setStartDateRange] = useState(null)
   const [endDateRange, setEndDateRange] = useState(null)
   const [open, setOpen] = useState(false)
@@ -138,7 +140,7 @@ const User = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={6}>
         <Card>
           <CardHeader title='Download Application' />
           <CardContent>
@@ -146,6 +148,20 @@ const User = () => {
               <Grid item sm={1.5} xs={12}>
                 <Button variant='contained' startIcon={<Icon icon='tabler:download' />} onClick={downloadApplication}>
                   Download
+                </Button>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Card>
+          <CardHeader title='Forgot Password' />
+          <CardContent>
+            <Grid container spacing={6}>
+              <Grid item sm={12} xs={12}>
+                <Button variant='contained' onClick={() => router.push('/forgot-password')}>
+                  Click here to forgot password
                 </Button>
               </Grid>
             </Grid>

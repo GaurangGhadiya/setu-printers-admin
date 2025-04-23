@@ -207,7 +207,7 @@ const LoginPage = () => {
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='admin@gmail.com'
+                      placeholder=''
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
                     />
@@ -256,15 +256,15 @@ const LoginPage = () => {
                   justifyContent: 'space-between'
                 }}
               >
-                <FormControlLabel
+                {/* <FormControlLabel
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
-                />
-                <Typography component={LinkStyled} href='/forgot-password'>
+                /> */}
+                {/* <Typography component={LinkStyled} href='/forgot-password'>
                   Forgot Password?
-                </Typography>
+                </Typography> */}
               </Box>
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
+              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4, mt: 2 }}>
                 Login
               </Button>
               {/* <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
