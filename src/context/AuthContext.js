@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+      const storedToken = window.sessionStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
         setLoading(true)
         await axios
@@ -44,9 +44,9 @@ const AuthProvider = ({ children }) => {
             setUser({ ...response.data.userData })
           })
           .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
+            sessionStorage.removeItem('userData')
+            sessionStorage.removeItem('refreshToken')
+            sessionStorage.removeItem('accessToken')
             setUser(null)
             setLoading(false)
             if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
@@ -66,13 +66,13 @@ const AuthProvider = ({ children }) => {
       .post(authConfig.loginEndpoint, params)
       .then(async response => {
         params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
+          ? window.sessionStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
           : null
-          
+
         // const returnUrl = router.query.returnUrl
-        const returnUrl = "/dashboard"
+        const returnUrl = '/dashboard'
         setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+        params.rememberMe ? window.sessionStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
@@ -83,8 +83,8 @@ const AuthProvider = ({ children }) => {
 
   const handleLogout = () => {
     setUser(null)
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    window.sessionStorage.removeItem('userData')
+    window.sessionStorage.removeItem(authConfig.storageTokenKeyName)
     router.push('/login')
   }
 

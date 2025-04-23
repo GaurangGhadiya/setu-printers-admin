@@ -128,8 +128,8 @@ mock.onGet('/auth/me').reply(config => {
           expiresIn: jwtConfig.expirationTime
         })
 
-        // ** Set new token in localStorage
-        window.localStorage.setItem(defaultAuthConfig.storageTokenKeyName, accessToken)
+        // ** Set new token in sessionStorage
+        window.sessionStorage.setItem(defaultAuthConfig.storageTokenKeyName, accessToken)
         const obj = { userData: { ...user, password: undefined } }
 
         // ** return 200 with user data
