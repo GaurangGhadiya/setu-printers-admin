@@ -80,6 +80,7 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     if (!formData.email) {
       toast.error('email is requried')
+
       // } else if (!formData.oldPassword) {
       //   toast.error('Old password is requried')
     } else if (!formData.newPassword) {
@@ -92,6 +93,7 @@ const ForgotPassword = () => {
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/auth/forgotPassword`, {
           email: formData.email,
+
           // oldPassword: formData.oldPassword,
           newPassword: formData.newPassword
         })
@@ -273,6 +275,7 @@ const ForgotPassword = () => {
   )
 }
 ForgotPassword.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
 // ForgotPassword.guestGuard = true
 
 export default ForgotPassword

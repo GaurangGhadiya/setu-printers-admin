@@ -132,7 +132,6 @@ const LoginPage = () => {
           'accessToken',
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0MzgwMTIxLCJleHAiOjE3NDQzODA0MjF9.8vMTNk7HpQocuCnpY4xp12vVEtsFSs7unMiXKpPAhA8'
         )
-        // router.replace('/dashboard')
         window.location.pathname = '/dashboard'
       })
       .catch(e => {
