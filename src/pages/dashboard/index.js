@@ -171,36 +171,45 @@ const User = () => {
       })
   }
 
-  const exportAsCsv = () => {
-    let exportData = [...userList]
+  const exportAsCsv = async () => {
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/list`, {})
+      .then(res => {
+        console.log('userList', res)
+        let exportData = [...res?.data?.data]
 
-    if (startDateRangeCSV && endDateRangeCSV) {
-      const startDate = new Date(startDateRangeCSV)
-      const endDate = new Date(endDateRangeCSV)
+        if (startDateRangeCSV && endDateRangeCSV) {
+          const startDate = new Date(startDateRangeCSV)
+          const endDate = new Date(endDateRangeCSV)
 
-      const filteredUsers = userList.filter(user => {
-        const createdAt = new Date(user.created_at)
+          const filteredUsers = userList.filter(user => {
+            const createdAt = new Date(user.created_at)
 
-        return createdAt >= startDate && createdAt <= endDate
+            return createdAt >= startDate && createdAt <= endDate
+          })
+          exportData = [...filteredUsers]
+
+          console.log('filteredUsers', filteredUsers)
+        }
+
+        let finalData = exportData?.map(user => ({
+          Name: user?.user_data?.full_name,
+          Barcode: user?.barcode,
+          Selfie: process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + user.selfie,
+          CreatedDate: moment(user.created_at).format('DD-MM-YYYY hh:mm A')
+        }))
+
+        console.log('finalData', finalData)
+        if (finalData?.length > 0) {
+          exportToExcel(finalData)
+        } else {
+          toast.error('No data found between selected dates')
+        }
       })
-      exportData = [...filteredUsers]
-
-      console.log('filteredUsers', filteredUsers)
-    }
-
-    let finalData = exportData?.map(user => ({
-      Name: user?.user_data?.full_name,
-      Barcode: user?.barcode,
-      Selfie: process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + user.selfie,
-      CreatedDate: moment(user.created_at).format('DD-MM-YYYY hh:mm A')
-    }))
-
-    console.log('finalData', finalData)
-    if (finalData?.length > 0) {
-      exportToExcel(finalData)
-    } else {
-      toast.error('No data found between selected dates')
-    }
+      .catch(e => {
+        console.log('e', e)
+        toast.error(e?.response?.data?.error?.message)
+      })
   }
 
   const getUser = async (e, clear) => {
