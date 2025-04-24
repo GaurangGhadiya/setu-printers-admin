@@ -66,8 +66,8 @@ const User = () => {
   const handleSave = async () => {
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/deleteScannedCodeByDate`, {
-        startDate: startDateRange,
-        endDate: endDateRange
+        startDate: addDays(startDateRange, 1),
+        endDate: addDays(endDateRange, 1)
       })
       .then(res => {
         console.log('user delete', res)
@@ -84,6 +84,7 @@ const User = () => {
 
   const handleOnChangeRange = dates => {
     const [start, end] = dates
+    console.log('dates', dates)
     setStartDateRange(start)
     setEndDateRange(end)
   }
