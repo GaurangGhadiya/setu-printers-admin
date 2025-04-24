@@ -51,8 +51,8 @@ const UserDropdown = props => {
   const { direction } = settings
 
   useEffect(() => {
-    if (sessionStorage.getItem('userData')) {
-      setUser_data(JSON.parse(sessionStorage.getItem('userData')))
+    if (localStorage.getItem('userData')) {
+      setUser_data(JSON.parse(localStorage.getItem('userData')))
     }
   }, [])
 

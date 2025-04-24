@@ -33,7 +33,7 @@ const staticSettings = {
 const restoreSettings = () => {
   let settings = null
   try {
-    const storedData = window.sessionStorage.getItem('settings')
+    const storedData = window.localStorage.getItem('settings')
     if (storedData) {
       settings = { ...JSON.parse(storedData), ...staticSettings }
     } else {
@@ -46,7 +46,7 @@ const restoreSettings = () => {
   return settings
 }
 
-// set settings in sessionStorage
+// set settings in localStorage
 const storeSettings = settings => {
   const initSettings = Object.assign({}, settings)
   delete initSettings.appBar
@@ -55,7 +55,7 @@ const storeSettings = settings => {
   delete initSettings.navHidden
   delete initSettings.lastLayout
   delete initSettings.toastPosition
-  window.sessionStorage.setItem('settings', JSON.stringify(initSettings))
+  window.localStorage.setItem('settings', JSON.stringify(initSettings))
 }
 
 // ** Create Context

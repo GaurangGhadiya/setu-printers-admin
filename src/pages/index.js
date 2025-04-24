@@ -6,7 +6,7 @@ const Home = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const userData = sessionStorage.getItem('userData')
+    const userData = localStorage.getItem('userData')
     if (userData) {
       setUser(JSON.parse(userData))
       router.push('/dashboard')
