@@ -107,11 +107,11 @@ const App = props => {
             {({ settings }) => {
               return (
                 <ThemeComponent settings={settings}>
-                  {/* <Guard authGuard={authGuard} guestGuard={guestGuard}> */}
-                  {/* <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}> */}
-                  {getLayout(<Component {...pageProps} />)}
-                  {/* </AclGuard> */}
-                  {/* </Guard> */}
+                  <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                    <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
+                      {getLayout(<Component {...pageProps} />)}
+                    </AclGuard>
+                  </Guard>
                   <ReactHotToast>
                     <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
                   </ReactHotToast>

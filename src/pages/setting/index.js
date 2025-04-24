@@ -156,12 +156,12 @@ const User = () => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <Card>
-          <CardHeader title='Forgot Password' />
+          <CardHeader title='Change Password' />
           <CardContent>
             <Grid container spacing={6}>
               <Grid item sm={12} xs={12}>
                 <Button variant='contained' onClick={() => router.push('/forgot-password')}>
-                  Click here to forgot password
+                  Click here to change password
                 </Button>
               </Grid>
             </Grid>

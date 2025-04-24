@@ -80,8 +80,8 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     if (!formData.email) {
       toast.error('email is requried')
-    } else if (!formData.oldPassword) {
-      toast.error('Old password is requried')
+      // } else if (!formData.oldPassword) {
+      //   toast.error('Old password is requried')
     } else if (!formData.newPassword) {
       toast.error('New password is requried')
     } else if (!formData.newPassword2) {
@@ -92,12 +92,12 @@ const ForgotPassword = () => {
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/auth/forgotPassword`, {
           email: formData.email,
-          oldPassword: formData.oldPassword,
+          // oldPassword: formData.oldPassword,
           newPassword: formData.newPassword
         })
         .then(res => {
           console.log('user login', res)
-          toast.success('Forgot Password Successfully')
+          toast.success('Password Change Successfully')
           router.replace('/login')
         })
         .catch(e => {
@@ -173,7 +173,7 @@ const ForgotPassword = () => {
             </svg>
             <Box sx={{ my: 6 }}>
               <Typography sx={{ mb: 1.5, fontWeight: 500, fontSize: '1.625rem', lineHeight: 1.385 }}>
-                Forgot Password? 🔒
+                Change Password? 🔒
               </Typography>
               {/* <Typography sx={{ color: 'text.secondary' }}>
                 Enter your email and we&prime;ll send you instructions to reset your password
@@ -190,7 +190,7 @@ const ForgotPassword = () => {
                 name='email' // ← add this line
                 value={formData?.email || ''}
               />
-              <CustomTextField
+              {/* <CustomTextField
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
                 label='Old Password'
@@ -211,7 +211,7 @@ const ForgotPassword = () => {
                     </InputAdornment>
                   )
                 }}
-              />
+              /> */}
               <CustomTextField
                 fullWidth
                 type={showPassword2 ? 'text' : 'password'}
@@ -257,7 +257,7 @@ const ForgotPassword = () => {
                 }}
               />
               <Button fullWidth type='button' onClick={handleSubmit} variant='contained' sx={{ mb: 4 }}>
-                Forgot Password
+                Change Password
               </Button>
               <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', '& svg': { mr: 1 } }}>
                 <LinkStyled href='/setting'>
@@ -273,6 +273,6 @@ const ForgotPassword = () => {
   )
 }
 ForgotPassword.getLayout = page => <BlankLayout>{page}</BlankLayout>
-ForgotPassword.guestGuard = true
+// ForgotPassword.guestGuard = true
 
 export default ForgotPassword
