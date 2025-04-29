@@ -20,7 +20,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { IconButton, InputAdornment } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
@@ -72,18 +72,27 @@ const ForgotPassword = () => {
 
   console.log('formData', formData)
 
+  useEffect(() => {
+    if (localStorage.getItem('userData')) {
+      let email = JSON.parse(localStorage.getItem('userData'))?.email
+      setFormData({ ...formData, email: email })
+    }
+  }, [router])
+
   const handleChange = e => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
   const handleSubmit = async () => {
-    if (!formData.email) {
-      toast.error('email is requried')
+    // if (!formData.email) {
+    //   toast.error('email is requried')
 
-      // } else if (!formData.oldPassword) {
-      //   toast.error('Old password is requried')
-    } else if (!formData.newPassword) {
+    // } else if (!formData.oldPassword) {
+    //   toast.error('Old password is requried')
+    // }
+
+    if (!formData.newPassword) {
       toast.error('New password is requried')
     } else if (!formData.newPassword2) {
       toast.error('Confirm password is requried')
@@ -100,7 +109,7 @@ const ForgotPassword = () => {
         .then(res => {
           console.log('user login', res)
           toast.success('Password Change Successfully')
-          router.replace('/login')
+          router.push('/setting')
         })
         .catch(e => {
           console.log('e', e)
@@ -182,7 +191,7 @@ const ForgotPassword = () => {
               </Typography> */}
             </Box>
             <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <CustomTextField
+              {/*<CustomTextField
                 fullWidth
                 autoFocus
                 type={'email'}
@@ -191,7 +200,7 @@ const ForgotPassword = () => {
                 onChange={handleChange}
                 name='email' // ← add this line
                 value={formData?.email || ''}
-              />
+              /> */}
               {/* <CustomTextField
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
