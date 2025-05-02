@@ -252,11 +252,11 @@ const User = () => {
 
   const userDropdown = async () => {
     await axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/dashboard/list`, {})
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/list`, {})
       .then(res => {
         console.log('user all data', res?.data?.data)
 
-        const uniqueById = Array.from(new Map(res?.data?.data?.map(item => [item.user_data?.full_name, item])).values())
+        const uniqueById = Array.from(new Map(res?.data?.data?.map(item => [item?.full_name, item])).values())
         console.log('uniqueById', uniqueById)
         setDropdownList(uniqueById)
 
@@ -426,9 +426,9 @@ const User = () => {
                   {/* <MenuItem disable value=''>
                     <em>Search By User</em>
                   </MenuItem> */}
-                  {dropdownList?.map(v => (
-                    <MenuItem key={v} value={v?.user_data?.full_name}>
-                      {v?.user_data?.full_name}
+                 {dropdownList?.map(v => (
+                    <MenuItem key={v?.full_name} value={v?.full_name}>
+                      {v?.full_name}
                     </MenuItem>
                   ))}
                 </CustomTextField>
