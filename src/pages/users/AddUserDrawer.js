@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -47,19 +47,21 @@ const SidebarAddUser = props => {
       'image/*': ['.png', '.jpg', '.jpeg', '.gif']
     },
     onDrop: acceptedFiles => {
-      setFiles(acceptedFiles.map(file => Object.assign(file)))
+      setFiles(acceptedFiles?.map(file => Object.assign(file)))
     }
   })
 
   const img = files.map(file => (
-    <img
-      key={file.name}
-      alt={file.name}
-      className='single-file-image'
-      height={300}
-      width={300}
-      src={URL.createObjectURL(file)}
-    />
+    <Box position={'relative'} key={file}>
+      <img
+        key={file.name}
+        alt={file.name}
+        className='single-file-image'
+        height={300}
+        width={300}
+        src={typeof file == 'string' ? file : URL.createObjectURL(file)}
+      />
+    </Box>
   ))
 
   // ** Props
@@ -72,6 +74,23 @@ const SidebarAddUser = props => {
   // ** Hooks
   // const dispatch = useDispatch()
   // const store = useSelector(state => state.user)
+  useEffect(() => {
+    if (props.editData) {
+      setData({
+        fullName: props.editData?.full_name,
+        phoneNumber: props.editData?.phone_number,
+        phoneNumber2: props.editData?.phone_number_2,
+        email: props.editData?.email,
+        address: props.editData?.address
+      })
+      setFiles(
+        props.editData?.profile_photo?.length > 5
+          ? [process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + props.editData?.profile_photo]
+          : []
+      )
+    }
+  }, [props.editData])
+  console.log('data', data)
 
   const {
     reset,
@@ -110,20 +129,43 @@ const SidebarAddUser = props => {
       // } else if (!data?.address) {
       //   toast.error('Address is requried')
     } else {
-      const formData = jsonToFormData({ ...data, profilePhoto: files?.[0] })
-
-      await axios
-        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, formData)
-        .then(res => {
-          console.log('res', res)
-          toast.success('User Added Successfull')
-          handleClose()
-          props.getUser()
-        })
-        .catch(e => {
-          console.log('e', e)
-          toast.error(e?.response?.data?.error?.message)
-        })
+      if (props.editData) {
+        let body = {
+          ...data,
+          userId: props.editData?.user_id,
+          removeProfilePhoto: files?.length ? false : true
+        }
+        if (files?.[0]?.name) {
+          body['profilePhoto'] = files?.[0]
+        }
+        const formData = jsonToFormData(body)
+        await axios
+          .put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/edit`, formData)
+          .then(res => {
+            console.log('res', res)
+            toast.success('User Update Successfull')
+            handleClose()
+            props.getUser()
+          })
+          .catch(e => {
+            console.log('e', e)
+            toast.error(e?.response?.data?.error?.message)
+          })
+      } else {
+        const formData = jsonToFormData({ ...data, profilePhoto: files?.[0] })
+        await axios
+          .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, formData)
+          .then(res => {
+            console.log('res', res)
+            toast.success('User Added Successfull')
+            handleClose()
+            props.getUser()
+          })
+          .catch(e => {
+            console.log('e', e)
+            toast.error(e?.response?.data?.error?.message)
+          })
+      }
     }
   }
 
@@ -140,6 +182,7 @@ const SidebarAddUser = props => {
     reset()
     setFiles([])
     setData()
+    props.setEditData(null)
   }
 
   return (
@@ -152,7 +195,7 @@ const SidebarAddUser = props => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Add User</Typography>
+        <Typography variant='h5'>{props.editData ? 'Update' : 'Add'} User</Typography>
         <IconButton
           size='small'
           onClick={handleClose}
@@ -267,7 +310,12 @@ const SidebarAddUser = props => {
             id='textarea-outlined-static'
           />
 
-          <Box border={'1px dotted #ccc'} borderRadius={1} mt={5} p={5}>
+          <Box border={'1px dotted #ccc'} borderRadius={1} mt={5} p={5} position={'relative'}>
+            {files?.length > 0 && (
+              <Box position={'absolute'} top={-10} right={-10} zIndex={9999} style={{ cursor: 'pointer' }}>
+                <Icon icon='tabler:trash' fontSize={20} color='red' onClick={() => setFiles([])} />
+              </Box>
+            )}
             <Box {...getRootProps({ className: 'dropzone' })} sx={files.length ? { height: 300 } : {}}>
               <input {...getInputProps()} />
               {files.length ? (
@@ -300,7 +348,7 @@ const SidebarAddUser = props => {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 4 }}>
             <Button type='submit' variant='contained' sx={{ mr: 3 }}>
-              Submit
+              {props.editData ? 'Update' : 'Submit'}
             </Button>
             <Button variant='tonal' color='secondary' onClick={handleClose}>
               Cancel

@@ -127,6 +127,7 @@ const Home = () => {
   const [value, setValue] = useState('')
   const [status, setStatus] = useState('')
   const [addUserOpen, setAddUserOpen] = useState(false)
+  const [editData, setEditData] = useState({})
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [userList, setUserList] = useState([])
   const [filterData, setFilterData] = useState({})
@@ -166,19 +167,18 @@ const Home = () => {
   }
 
   const renderClient = row => {
-    if (row?.profile_photo) {
-      return (
-        <CustomAvatar
-          onClick={() =>
-            row?.profile_photo != 'null'
-              ? handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo)
-              : toast.error('No image found')
-          }
-          src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo}
-          sx={{ mr: 2.5, width: 38, height: 38, cursor: 'pointer' }}
-        />
-      )
-    }
+    // if (row?.profile_photo) {
+    return (
+      <CustomAvatar
+        onClick={() =>
+          row?.profile_photo?.length > 5
+            ? handleClick(process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo)
+            : toast.error('No image found')
+        }
+        src={process.env.NEXT_PUBLIC_PHOTO_BASE_URL + '/' + row?.profile_photo}
+        sx={{ mr: 2.5, width: 38, height: 38, cursor: 'pointer' }}
+      />
+    )
   }
 
   const getUser = async clear => {
@@ -318,17 +318,26 @@ const Home = () => {
       headerName: 'Actions',
       renderCell: ({ row }) => {
         return (
-          <Box
-            display={'flex'}
-            alignItems={'center'}
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              setOpen(true)
-              setDeleteId(row?.user_id)
-            }}
-          >
-            <Icon icon='tabler:trash' fontSize={20} color='red' />
-            &nbsp;
+          <Box display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }}>
+            <Icon
+              icon='tabler:trash'
+              fontSize={20}
+              color='red'
+              onClick={() => {
+                setOpen(true)
+                setDeleteId(row?.user_id)
+              }}
+            />
+            &nbsp; &nbsp; &nbsp;
+            <Icon
+              icon='tabler:pencil'
+              fontSize={20}
+              color='blue'
+              onClick={() => {
+                toggleAddUserDrawer()
+                setEditData(row)
+              }}
+            />
           </Box>
         )
       }
@@ -440,7 +449,12 @@ const Home = () => {
             </Grid>
           </CardContent>
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+          <TableHeader
+            value={value}
+            handleFilter={handleFilter}
+            toggle={toggleAddUserDrawer}
+            setEditData={setEditData}
+          />
           <DataGrid
             autoHeight
             rowHeight={62}
@@ -464,7 +478,13 @@ const Home = () => {
         </Card>
       </Grid>
 
-      <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} getUser={getUser} />
+      <AddUserDrawer
+        open={addUserOpen}
+        toggle={toggleAddUserDrawer}
+        getUser={getUser}
+        setEditData={setEditData}
+        editData={editData}
+      />
       <Modal open={!!selectedImage} onClose={handleClose}>
         <Box
           sx={{
