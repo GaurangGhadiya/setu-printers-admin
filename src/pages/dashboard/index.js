@@ -180,16 +180,15 @@ const User = () => {
 
         if (startDateRangeCSV && endDateRangeCSV) {
           const startDate = new Date(startDateRangeCSV)
-          const endDate = new Date(endDateRangeCSV)
-
-          const filteredUsers = userList.filter(user => {
+          const endDate = new Date(addDays(endDateRangeCSV, 1))
+          const filteredUsers = exportData?.filter(user => {
             const createdAt = new Date(user.created_at)
 
-            return createdAt >= startDate && createdAt <= endDate
+            return createdAt >= startDate && createdAt < endDate
           })
           exportData = [...filteredUsers]
 
-          console.log('filteredUsers', filteredUsers)
+          console.log('exportData', exportData)
         }
 
         let finalData = exportData?.map(user => ({
@@ -426,7 +425,7 @@ const User = () => {
                   {/* <MenuItem disable value=''>
                     <em>Search By User</em>
                   </MenuItem> */}
-                 {dropdownList?.map(v => (
+                  {dropdownList?.map(v => (
                     <MenuItem key={v?.full_name} value={v?.full_name}>
                       {v?.full_name}
                     </MenuItem>
