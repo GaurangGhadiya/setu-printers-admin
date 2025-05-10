@@ -127,7 +127,7 @@ const Home = () => {
   const [value, setValue] = useState('')
   const [status, setStatus] = useState('')
   const [addUserOpen, setAddUserOpen] = useState(false)
-  const [editData, setEditData] = useState({})
+  const [editData, setEditData] = useState(null)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [userList, setUserList] = useState([])
   const [filterData, setFilterData] = useState({})
